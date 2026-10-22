@@ -58,7 +58,7 @@ a{color:var(--vapor-2)}
 .nav ul{list-style:none;margin:0;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin}
 .nav a{display:block;white-space:nowrap;padding:12px 10px;font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:2px solid transparent}
 .nav a:hover{color:var(--ink)}
-.nav a[aria-current="true"]{color:var(--ink);border-bottom-color:var(--brass)}
+.nav a[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brass)}
 
 /* Abertura */
 .hero{padding-block:56px 40px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:center}
@@ -70,7 +70,7 @@ a{color:var(--vapor-2)}
 @media (max-width:640px){.hero{grid-template-columns:1fr}.emblem{order:-1;width:110px}}
 
 /* Seções */
-section{padding-block:56px;border-top:1px solid var(--line);scroll-margin-top:48px}
+section{padding-block:40px 64px;scroll-margin-top:56px}
 .sec-head{display:grid;gap:8px;margin-bottom:28px}
 .sec-head h2{font-size:clamp(1.8rem,3.6vw,2.5rem)}
 .sec-head p{max-width:var(--measure);color:var(--muted)}
@@ -151,10 +151,18 @@ tr:last-child td{border-bottom:0}
 .island .tag{font-style:italic;color:var(--muted)}
 .island .places{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .island .places b{font-weight:600}
-.island .vision{padding:24px;border-left:1px solid var(--line);display:grid;gap:10px;align-content:start;background:linear-gradient(160deg,color-mix(in srgb,var(--vapor-2) 7%,transparent),color-mix(in srgb,var(--vapor) 9%,transparent))}
-.island .vision .label{color:var(--vapor)}
-.island .vision p{font-style:italic;font-size:.95rem}
-@media (max-width:820px){.island{grid-template-columns:1fr}.island .vision{border-left:0;border-top:1px solid var(--line)}}
+.island-map{margin:0;border-left:1px solid var(--line);background:var(--bg);display:flex;align-items:flex-start}
+.island-map img{display:block;width:100%;height:auto}
+@media (max-width:820px){.island{grid-template-columns:1fr}.island-map{border-left:0;border-top:1px solid var(--line)}}
+.map{margin:0 0 28px;border:1px solid var(--line);background:var(--surface)}
+.map img{display:block;width:100%;height:auto}
+.map figcaption{padding:10px 14px;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line)}
+.portrait{display:block;width:100%;aspect-ratio:4/5;max-width:100%;object-fit:cover;object-position:center 20%;border:1px solid var(--line);margin-bottom:4px;background:var(--bg)}
+.org{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:28px;align-items:start}
+.org figure{margin:0;border:1px solid var(--line);background:var(--surface)}
+.org figure img{display:block;width:100%;height:auto}
+.org figcaption{padding:8px 12px;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line)}
+@media (max-width:640px){.org{grid-template-columns:1fr}.org figure{max-width:220px}}
 
 /* Povos */
 .species{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
@@ -194,12 +202,23 @@ tr:last-child td{border-bottom:0}
 
 footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem;color:var(--muted)}
 
-@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 </style>
+
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <p class="sub">Terrenea · Arquipélago de Nea · Ano 7 DGU</p>
+      <h1>Estaleiro das Estrelas</h1>
+      <p class="lede">O mundo de Terrenea e o Arquipélago de Nea, o Reino das Ilhas: seus deuses, sua magia, suas ilhas, seus povos e as pessoas que estão no centro da história.</p>
+      <p class="sources">Fonte única: <em>Estaleiro das Estrelas – Bíblia do Mundo</em>.</p>
+    </div>
+    <svg class="emblem" id="emblem" viewBox="0 0 100 100" role="img" aria-label="Vitral hexagonal rachado em doze partes, símbolo do Panteão Humano"></svg>
+  </header>
+</div>
 
 <nav class="nav" aria-label="Capítulos">
   <div class="wrap">
-    <ul id="navlist">
+    <ul id="navlist" role="tablist">
       <li><a href="#linha-do-tempo">Linha do tempo</a></li>
       <li><a href="#cosmologia">Cosmologia</a></li>
       <li><a href="#panteoes">Panteões</a></li>
@@ -214,15 +233,6 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
 
 <main>
 <div class="wrap">
-  <header class="hero">
-    <div>
-      <p class="sub">Terrenea · Arquipélago de Nea · Ano 7 DGU</p>
-      <h1>Estaleiro das Estrelas</h1>
-      <p class="lede">O mundo de Terrenea e o Arquipélago de Nea, o Reino das Ilhas: seus deuses, sua magia, suas ilhas, seus povos e as pessoas que estão no centro da história.</p>
-      <p class="sources">Fonte única: <em>Estaleiro das Estrelas – Bíblia do Mundo</em>.</p>
-    </div>
-    <svg class="emblem" id="emblem" viewBox="0 0 100 100" role="img" aria-label="Vitral hexagonal rachado em doze partes, símbolo do Panteão Humano"></svg>
-  </header>
 
   <!-- LINHA DO TEMPO -->
   <section id="linha-do-tempo">
@@ -314,8 +324,12 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
     <div class="sec-head">
       <span class="label">Geografia</span>
       <h2>As sete ilhas do Reino</h2>
-      <p>O antigo continente de Mysticum partiu-se em oito pedaços. O menor subiu aos céus como Callizuv; os sete restantes formam o Arquipélago de Nea. Cada ilha tem a sua Visão do Fragmento do Mapa.</p>
+      <p>O antigo continente de Mysticum partiu-se em oito pedaços. O menor subiu aos céus como Callizuv; os sete restantes formam o Arquipélago de Nea.</p>
     </div>
+    <figure class="map">
+      <img src="img/arquipelago.jpg" alt="Mapa do Arquipélago de Nea, o Reino das Ilhas, com as sete ilhas" width="1400" height="1050">
+      <figcaption>Arquipélago de Nea – O Reino das Ilhas</figcaption>
+    </figure>
     <div class="islands" id="islands"></div>
   </section>
 
@@ -358,8 +372,14 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
       </div>
     </div>
     <div class="sub-block">
-      <h3>Facções e instituições</h3>
-      <div class="factions" id="factions"></div>
+      <h3>Organizações e facções</h3>
+      <div class="org">
+        <figure>
+          <img src="img/faccoes.jpg" alt="Emblema da seção Organizações e Facções do cenário: um livro aberto com uma chama, num octógono" width="933" height="1400" loading="lazy">
+          <figcaption>Organizações e Facções do cenário</figcaption>
+        </figure>
+        <div class="factions" id="factions"></div>
+      </div>
     </div>
   </section>
 
@@ -610,41 +630,34 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
 
   /* ---------- Ilhas ---------- */
   var islands = [
-    {n:'Sirath', t:'Sede do Reinado', gov:'Rei Karth Ordon',
+    {n:'Sirath', img:'img/sirath.jpg', t:'Sede do Reinado', gov:'Rei Karth Ordon',
       d:`Abriga Risian, a gigantesca capital. Uma tentativa mágica de elevar a cidade aos céus a partiu em duas: a Cidade Baixa fica a 2 m acima do nível do mar; a Cidade Alta, a 86 m. Desde a morte de Lia, as escadarias foram destruídas e só elevadores arcanos da Guarda Real ligam os níveis.`,
       places:[['Cidade Alta de Risian','coração político e aristocrático, com o grande palácio e a nova refinaria de Vapor Arcano'],['Cidade Baixa de Risian','pobre e decadente, dominada por guildas criminosas e assolada por uma doença vinda dos esgotos'],['Elderlon','vilarejo dos elfos que deixaram Kirak no primeiro ano da guerra']],
-      clima:`Costeiro e temperado, com o bioma original transformado pela urbanização e industrialização. Baías profundas e portos naturais. No subsolo, esgotos e catacumbas onde se despeja o lodo tóxico do vapor.`,
-      v:`O céu está completamente vermelho, vocês conseguem sentir o calor deste lugar, ao mesmo tempo um frio na espinha. Vocês conhecem essa cidade, parece a cidade alta só que com algumas diferenças, a maior delas é uma grande torre negra no centro da cidade, ela tem pelo menos 50m de altura. Existe uma corrente de ar quente em todo lugar e essa corrente de ar parece vir da torre, como se ela fosse o epicentro do caos que ali acontece. A visão de vocês se encaminha para lá e adentra os portões pesados da torre, e subindo ao último andar, em uma câmara larga se encontra uma outra versão do monolito, só que diferente das outros, este é vermelho e possui algumas rachaduras.`},
-    {n:'Dankand', t:'Terra de pastagens e da Academia Mistamare', gov:'Duque Richard Ohlen',
+      clima:`Costeiro e temperado, com o bioma original transformado pela urbanização e industrialização. Baías profundas e portos naturais. No subsolo, esgotos e catacumbas onde se despeja o lodo tóxico do vapor.`},
+    {n:'Dankand', img:'img/dankand.jpg', t:'Terra de pastagens e da Academia Mistamare', gov:'Duque Richard Ohlen',
       d:`Ilha pacífica de vastas pastagens, que supre o reino com laticínios e grãos. Nos bastidores, a ascensão de Ohlen envolveu a traição e o assassinato do antigo rei. Grupos rebeldes como o Chifre Negro crescem na surdina, usando o descontentamento e as ruínas mágicas da ilha.`,
       places:[['Celand','maior cidade da ilha, porto movimentado e centro intelectual que orbita a Academia'],['Academia Mistamare','o colosso do conhecimento mágico em Nea, com poder político e acadêmico incomparável'],['Lago Khoonda e Ruínas Ancestrais','tribos orcs “para lá do lago” e templos subterrâneos com artefatos dos Primeiros Arcanos']],
-      clima:`Ameno, com ventos constantes e nevoeiros litorâneos esporádicos. Planícies verdes, vales férteis e colinas suaves sobre aquíferos profundos.`,
-      v:`Vocês veem as colinas de Dankand agora, um mausoléu aparece no horizonte, a visão vai rápido até ele até que vocês adentram o local. Após descer as escadas e virar alguns corredores, o chão de um corredor em particular se abre como uma armadilha de fosso, e a visão cai lá dentro. O lugar é uma câmara subterrânea secreta: algumas estantes vazias, um grande baú e, no fundo, um monolito de pedra irregular de dois metros com dois orbes de cristal negro cravejados, como olhos espreitando. Diante dele, dois jovens, uma humana e um meio-elfo, removem os orbes ao mesmo tempo; uma energia flui do monolito para eles, que mostram a ilha de Dankand com uma linha de energia partindo em direção a lugar nenhum.`},
-    {n:'Taosand', t:'Desertos, Clã Wuttes e a prisão Setranom', gov:'Duque Zebius Carath',
+      clima:`Ameno, com ventos constantes e nevoeiros litorâneos esporádicos. Planícies verdes, vales férteis e colinas suaves sobre aquíferos profundos.`},
+    {n:'Taosand', img:'img/taosand.jpg', t:'Desertos, Clã Wuttes e a prisão Setranom', gov:'Duque Zebius Carath',
       d:`Vasta e árida ilha central. Onde a civilização parece improvável, o Clã Wuttes ergueu um império comercial de conhaque e whisky. Fora de Ithay, a ilha é território sem lei ou prisional.`,
       places:[['Ithay','sede do Ducado, cidade encravada no deserto que prosperou após a união'],['Palácio Toksand','coração do Clã Wuttes, com as festas mais luxuosas e os melhores centros de jogos do Arquipélago'],['Prisão Setranom','fortaleza subterrânea abissal; dizem que seus andares inferiores tocam planos infernais'],['Cavernas Lhosan','assentamento recém-descoberto de dragão azul com metais preciosos, disputado por facções e criaturas']],
-      clima:`Estritamente árido: dias escaldantes, noites de frio cortante. Dunas, planaltos rochosos e cavernas tão profundas que abrigam a prisão.`,
-      v:`A escuridão parece ter tomado a visão de vocês, até que a luz se fez, revelando aquela sala inteiramente de pedra e com base circular, onde os blocos de pedra se movimentavam no chão e na parede com o efeito parecido com o de jogar uma pedra de água em uma lagoa calma. No centro da sala, estava o monolito cujo fragmento do mapa vocês já possuíam. A memória daquela sala estava ainda viva em vocês, assim como a da prisão que vocês entraram antes dela.`},
-    {n:'Kirak', t:'Selva dos Taurandares e frente de guerra contra os Lomerienares', gov:'Duquesa Carline Mission',
+      clima:`Estritamente árido: dias escaldantes, noites de frio cortante. Dunas, planaltos rochosos e cavernas tão profundas que abrigam a prisão.`},
+    {n:'Kirak', img:'img/kirak.jpg', t:'Selva dos Taurandares e frente de guerra contra os Lomerienares', gov:'Duquesa Carline Mission',
       d:`Densas selvas e as impressionantes árvores Akir. Na guerra, o antigo rei isolou a ilha; a facção Taurak o depôs e se aliou à Ordem Rubra. Os Lomerienares do subterrâneo de Sethy já promoveram massacres aliados a tribos orcs Krumathus.`,
       places:[['Scort','cidade nas copas e troncos das árvores Akir, sede da Duquesa'],['Sethy','domínio subterrâneo de onde os Lomerienares atacam a superfície'],['Breka','área das tribos orcs Krumathus']],
-      clima:`Equatorial, com umidade altíssima e chuvas constantes. Floresta primária fechada sobre redes de túneis e abismos que descem às profundezas.`,
-      v:`A mais bela floresta já vista pelos olhos de vocês, a visão passeia por uma imagem esplendorosa, o canto dos pássaros e os longínquos sons de flauta fazem parte da visão quase como uma trilha sonora para tanta beleza, a visão se fecha em uma gigantesca queda d’água, e ao se aproximar do que parece ser uma ruína em meio a toda essa paisagem, ela adentra a construção por uma espécie de abertura por onde cai um pouco de água, quase como um disfarce para a construção em meio à catarata. Dentro desta ruína, em uma sala onde a luz divina do sol deste lugar não alcança, está outro monolito.`},
-    {n:'Manty', t:'Pântanos da asheva e conflito com os Selkath', gov:'Duque Guerlan Karpy',
+      clima:`Equatorial, com umidade altíssima e chuvas constantes. Floresta primária fechada sobre redes de túneis e abismos que descem às profundezas.`},
+    {n:'Manty', img:'img/manty.jpg', t:'Pântanos da asheva e conflito com os Selkath', gov:'Duque Guerlan Karpy',
       d:`Beleza fúnebre de pântanos e águas turvas ricas em asheva, a base das poções de cura de Nea. A riqueza pertencia aos Selkath, traídos e exilados aos pântanos marginais. O Duque domina o mercado com taxas exploratórias e um regime quase escravocrata.`,
       places:[['Bilard','a “cidade flutuante” de canais e pontes entre ilhotes, onde se misturam as maiores poções do reino'],['Lagoa Kreed','principal jazida de asheva, controlada pelo Duque'],['Pântano de Rillanon','último refúgio dos guerreiros Selkath'],['Colinas de Tristan','anões neutros que só mantêm trocas comerciais com os humanos']],
-      clima:`Subtropical e abafado. Pântanos, manguezais e lodaçais sobre solos turfosos e instáveis, que dificultam cidades humanas e exércitos e favorecem os Selkath.`,
-      v:`Vocês se encontram no meio do oceano, olhando por todos os lados não se vê terra no horizonte. A visão afunda no mar e depois de algumas centenas de metros em direção às profundezas é revelada a vocês uma grande cidade submersa. Num piscar de olhos, a visão muda para um cômodo amplo e bem iluminado, cercado por barras de ferro do chão ao teto. Lá dentro, uma Lomerienare parece visivelmente frustrada. Ela ostenta um par de asas demoníacas e chifres retorcidos gravados com runas. Com olhos maliciosos e trajes nobres que fluem do ébano ao rubro, ela está parada, de frente para um monólito de pedra negra.`},
-    {n:'Nozerak', t:'Ilha cinza e selvagem', gov:'Duque Mhurren Kras',
+      clima:`Subtropical e abafado. Pântanos, manguezais e lodaçais sobre solos turfosos e instáveis, que dificultam cidades humanas e exércitos e favorecem os Selkath.`},
+    {n:'Nozerak', img:'img/nozerak.jpg', t:'Ilha cinza e selvagem', gov:'Duque Mhurren Kras',
       d:`Um monumento à destruição arcaica, de solo infértil. Kras governa com mão de ferro e exporta carne de gados adaptados e bebidas próprias. Na guerra, vingou-se do antigo rei e só depois aceitou a bandeira da Ordem Rubra, de quem depende para receber grãos e vegetais.`,
       places:[['Ophalar','a única cidade estável e protegida, sob severa ordem militar'],['Vulcão Hexu','centro mitológico da devastação; lendas falam de uma batalha de dragões antigos'],['Ermos Desolados','além dos portões de Ophalar: feras colossais e desaparecimentos noturnos recentes']],
-      clima:`Frio, inclemente e perpetuamente nublado. Tundra, estepes áridas e charnecas sobre solo de pedra e cinzas.`,
-      v:`A visão mostra agora um rio de lava, e uma pequena passagem que o acompanha. A fumaça que há nesse local ofusca o que vocês conseguem ver, e ao decorrer do caminho que a visão toma, vocês conseguem ver este rio se ramificando algumas vezes, até que finalmente a visão encontra a câmara onde está o monolito, repousado em uma única ilhota de terra envolta por lava. Um rugido alto e terrível se faz audível próximo dali e tira vocês da visão.`},
-    {n:'Anyaji', t:'Ilha nevada e cosmopolita', gov:'Duque Morgran Nord',
+      clima:`Frio, inclemente e perpetuamente nublado. Tundra, estepes áridas e charnecas sobre solo de pedra e cinzas.`},
+    {n:'Anyaji', img:'img/anyaji.jpg', t:'Ilha nevada e cosmopolita', gov:'Duque Morgran Nord',
       d:`A segunda maior ilha, estandarte de diversidade cultural sob montanhas nevadas e pinheirais. Nord, anão das colinas, foi posto como Duque para manter a paz após a insurgência fracassada de Dantheris Stonewolf.`,
       places:[['Fenoth','polo urbano cosmopolita e sede da regência'],['Kruma e Monte Tempestade','sedes dos anões das colinas (pilar militar) e das montanhas (armas e magia rúnica)'],['Cataratas Esfumaçadas','cidades livres em platôs que renegam a Coroa'],['Tifvia','condado dos Gaedins, mestres da música, tapeçaria e histórias'],['Siarth','enclave dos misteriosos Tsunassis, artistas exóticos dos palácios de Risian']],
-      clima:`Glacial, com nevascas frequentes. Taiga nas partes baixas e tundra alpina nas altas; montanhas colossais e picos com monastérios expostos ao frio mortal, como os de Guillan e Zonkav. Ricas jazidas minerais escavadas pelos anões.`,
-      v:`A consciência de vocês é subitamente tragada para a escuridão. A visão serpenteia em alta velocidade através de um labirinto de rocha úmida e túneis claustrofóbicos, como se a própria mente estivesse perdida no subsolo. De repente, o caminho se abre para as bordas de um fosso abissal. Nas sombras, dezenas de olhos tenebrosos e bestiais se abrem, brilhando no escuro. Eles não estão apenas olhando; eles reconhecem vocês. A queda dura uma eternidade, até estancar numa imensa câmara circular. No centro repousa o inconfundível monolito ancestral. Ao redor, nove portas idênticas marcam o perímetro da sala, guardando segredos que a visão não ousa revelar.`}
+      clima:`Glacial, com nevascas frequentes. Taiga nas partes baixas e tundra alpina nas altas; montanhas colossais e picos com monastérios expostos ao frio mortal, como os de Guillan e Zonkav. Ricas jazidas minerais escavadas pelos anões.`}
   ];
   var isl = document.getElementById('islands');
   islands.forEach(function(x){
@@ -658,10 +671,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
     info.appendChild(pl);
     info.appendChild(el('p','muted','<span class="label">Clima, bioma e geologia</span><br>'+x.clima));
     a.appendChild(info);
-    var v = el('div','vision');
-    v.appendChild(el('span','label','Visão do Fragmento do Mapa'));
-    v.appendChild(el('p',null,x.v));
-    a.appendChild(v);
+    a.appendChild(el('figure','island-map','<img src="'+x.img+'" alt="Mapa da ilha de '+x.n+'" width="1400" height="1050" loading="lazy">'));
     isl.appendChild(a);
   });
 
@@ -709,7 +719,8 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
   /* ---------- Personagens ---------- */
   function pips(n){ var s='<span class="pips" aria-label="'+n+' de 5">'; for (var i=1;i<=5;i++) s+='<i class="'+(i<=n?'on':'')+'"></i>'; return s+'</span>'; }
   function charCard(c){
-    var h = '<h4>'+c.n+'</h4><p class="ep">'+c.e+'</p><div class="stats">'
+    var h = (c.img ? '<img class="portrait" src="'+c.img+'" alt="Retrato de '+c.n+'" loading="lazy">' : '')
+      +'<h4>'+c.n+'</h4><p class="ep">'+c.e+'</p><div class="stats">'
       +'<div class="stat"><span>Pró-atividade</span>'+pips(c.s[0])+'</div>'
       +'<div class="stat"><span>Confiabilidade</span>'+pips(c.s[1])+'</div>'
       +'<div class="stat"><span>Capacidade</span>'+pips(c.s[2])+'</div></div>'
@@ -719,35 +730,55 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
     return h;
   }
   var main = [
-    {n:'Guillan',e:'O Montanhês Errante',s:[2,1,3],d:`Um gigante de coração inquieto desde a morte do mestre. Força descomunal e habilidade excepcional em combate, mas uma existência vazia sem a orientação que um dia o definiu. Vaga sem propósito, assombrado pela ausência de quem guiava seus passos.`,why:`Deixou seu templo nas montanhas de Anyaji numa jornada espiritual para conhecer o mundo e testar sua força. Aceita trabalhos de proteção para caravanas e comerciantes.`,now:`Hospedado em Celand à espera de trabalho, participando de desafios de combate locais.`},
-    {n:'Narion Cinzerai',e:'O Ladrão Arcano',s:[4,2,1],d:`Quer riqueza, influência e segurança, uma vida sem olhar por cima dos ombros. Vive, porém, uma sequência de fugas e perigos, fruto de escolhas impulsivas, preso num ciclo que parece incapaz de romper.`,why:`Depois de se envolver com criminosos em Risian, escondeu-se em Dankand, onde as autoridades não o conhecem, para se reinventar e ganhar dinheiro fácil.`,now:`Informante de ladrões ou falsificadores locais, aplicando pequenos golpes. Talvez espionando rotas comerciais para uma guilda mercante.`},
-    {n:'Emma Vendani',e:'A Barda Curiosa',s:[2,4,2],d:`Fascinada por histórias e lendas, quer narrar ao mundo tudo o que encontrar e ver seu nome virar sinônimo de conhecimento e aventura. Apesar do entusiasmo, parece invisível para quem poderia lhe abrir portas.`,why:`Pesquisa as lendas, ruínas e registros de Dankand e estuda músicas e tradições locais para suas composições.`,now:`Hospedada numa taverna de Celand, trocando canções por comida e estadia. Pode estar escrevendo sobre a Guerra da União.`},
-    {n:'Eldryn Siadorel',e:'O Nobre em Busca de Cura',s:[3,3,3],d:`Carrega o peso de libertar a mãe de uma maldição lançada por uma matriarca Lomerienare. A falta de respostas o angustia; desconfia que procura soluções nos lugares errados.`,why:`Enviado pela família para representar os interesses nobres de Kirak em negociações com Mistamare e aprender sobre avanços mágicos.`,now:`Reuniões com acadêmicos e nobres; rituais e bênçãos na cidade, pregando justiça e equilíbrio.`},
-    {n:'Kora Trovyrus',e:'A Guerreira em Busca de Identidade',s:[1,2,4],d:`Guerreira humana profundamente dedicada a Eldryn, mas sente que algo fundamental lhe falta. Sua identidade parece presa ao dever; por baixo da lealdade, a pergunta sobre quem é além do papel que lhe impuseram.`,why:`Guarda-costas de Eldryn, enviada para garantir sua segurança em Dankand.`,now:`Patrulha os arredores de Celand e troca treinamentos com paladinos e guerreiros locais.`}
+    {n:'Guillan',img:'img/guillan.jpg',e:'O Montanhês Errante',s:[2,1,3],d:`Um gigante de coração inquieto desde a morte do mestre. Força descomunal e habilidade excepcional em combate, mas uma existência vazia sem a orientação que um dia o definiu. Vaga sem propósito, assombrado pela ausência de quem guiava seus passos.`,why:`Deixou seu templo nas montanhas de Anyaji numa jornada espiritual para conhecer o mundo e testar sua força. Aceita trabalhos de proteção para caravanas e comerciantes.`,now:`Hospedado em Celand à espera de trabalho, participando de desafios de combate locais.`},
+    {n:'Narion Cinzerai',img:'img/narion.jpg',e:'O Ladrão Arcano',s:[4,2,1],d:`Quer riqueza, influência e segurança, uma vida sem olhar por cima dos ombros. Vive, porém, uma sequência de fugas e perigos, fruto de escolhas impulsivas, preso num ciclo que parece incapaz de romper.`,why:`Depois de se envolver com criminosos em Risian, escondeu-se em Dankand, onde as autoridades não o conhecem, para se reinventar e ganhar dinheiro fácil.`,now:`Informante de ladrões ou falsificadores locais, aplicando pequenos golpes. Talvez espionando rotas comerciais para uma guilda mercante.`},
+    {n:'Emma Vendani',img:'img/emma.jpg',e:'A Barda Curiosa',s:[2,4,2],d:`Fascinada por histórias e lendas, quer narrar ao mundo tudo o que encontrar e ver seu nome virar sinônimo de conhecimento e aventura. Apesar do entusiasmo, parece invisível para quem poderia lhe abrir portas.`,why:`Pesquisa as lendas, ruínas e registros de Dankand e estuda músicas e tradições locais para suas composições.`,now:`Hospedada numa taverna de Celand, trocando canções por comida e estadia. Pode estar escrevendo sobre a Guerra da União.`},
+    {n:'Eldryn Siadorel',img:'img/eldryn.jpg',e:'O Nobre em Busca de Cura',s:[3,3,3],d:`Carrega o peso de libertar a mãe de uma maldição lançada por uma matriarca Lomerienare. A falta de respostas o angustia; desconfia que procura soluções nos lugares errados.`,why:`Enviado pela família para representar os interesses nobres de Kirak em negociações com Mistamare e aprender sobre avanços mágicos.`,now:`Reuniões com acadêmicos e nobres; rituais e bênçãos na cidade, pregando justiça e equilíbrio.`},
+    {n:'Kora Trovyrus',img:'img/kora.jpg',e:'A Guerreira em Busca de Identidade',s:[1,2,4],d:`Guerreira humana profundamente dedicada a Eldryn, mas sente que algo fundamental lhe falta. Sua identidade parece presa ao dever; por baixo da lealdade, a pergunta sobre quem é além do papel que lhe impuseram.`,why:`Guarda-costas de Eldryn, enviada para garantir sua segurança em Dankand.`,now:`Patrulha os arredores de Celand e troca treinamentos com paladinos e guerreiros locais.`}
   ];
   var sec = [
-    {n:'Mirion Sudren',e:'O Feiticeiro em Busca de Retribuição',s:[4,2,4],d:`Meio-elfo, príncipe herdeiro do último rei de Dankand e ex-aluno brilhante de Mistamare. Criado por Richard Ohlen, o homem que conspirou com Karth Ordon para matar seu pai. Ao descobrir a verdade pelo diário de Bor-gma, confrontou Ohlen e fugiu com o grimório e o fragmento do mapa. Saiu em busca dos demais fragmentos do mapa, guiado por visões. Agora quer ver ruir o reino erguido sobre mentiras e traições.`},
-    {n:'Jarael Taralvin',e:'A Última Arcana',s:[2,3,3],d:`Última descendente da linhagem de Bor-gma. Nascida em família nobre de Bilard, órfã aos oito anos, enviada a Mistamare, onde se tornou a aluna predileta de Ohlen. Cresceu com Mirion; os dois se apaixonaram. Abandonada sem explicação, suspeita que Ohlen esconde a verdade. Seis anos depois, é a mais jovem do conselho da Academia.`},
-    {n:'Richard Ohlen',e:'O Homem que Deseja Mais',s:[3,2,4],d:`Nascido em família modesta de Dankand, chegou a conselheiro e braço direito do rei. Aliou-se em segredo a Karth Ordon para assassiná-lo, assumiu Dankand e apoiou a guerra. Fez de Mistamare a instituição mais influente do Arquipélago e moldou ali Mirion e Jarael, que via como trunfo político. Vive sob a ameaça dos próprios atos.`}
+    {n:'Mirion Sudren',img:'img/mirion.jpg',e:'O Feiticeiro em Busca de Retribuição',s:[4,2,4],d:`Meio-elfo, príncipe herdeiro do último rei de Dankand e ex-aluno brilhante de Mistamare. Criado por Richard Ohlen, o homem que conspirou com Karth Ordon para matar seu pai. Ao descobrir a verdade pelo diário de Bor-gma, confrontou Ohlen e fugiu com o grimório e o fragmento do mapa. Saiu em busca dos demais fragmentos do mapa, guiado por visões. Agora quer ver ruir o reino erguido sobre mentiras e traições.`},
+    {n:'Jarael Taralvin',img:'img/jarael.jpg',e:'A Última Arcana',s:[2,3,3],d:`Última descendente da linhagem de Bor-gma. Nascida em família nobre de Bilard, órfã aos oito anos, enviada a Mistamare, onde se tornou a aluna predileta de Ohlen. Cresceu com Mirion; os dois se apaixonaram. Abandonada sem explicação, suspeita que Ohlen esconde a verdade. Seis anos depois, é a mais jovem do conselho da Academia.`},
+    {n:'Richard Ohlen',img:'img/ohlen.jpg',e:'O Homem que Deseja Mais',s:[3,2,4],d:`Nascido em família modesta de Dankand, chegou a conselheiro e braço direito do rei. Aliou-se em segredo a Karth Ordon para assassiná-lo, assumiu Dankand e apoiou a guerra. Fez de Mistamare a instituição mais influente do Arquipélago e moldou ali Mirion e Jarael, que via como trunfo político. Vive sob a ameaça dos próprios atos.`}
   ];
   var cm = document.getElementById('chars-main'), cs = document.getElementById('chars-sec');
   main.forEach(function(c){ cm.appendChild(el('article','char',charCard(c))); });
   sec.forEach(function(c){ cs.appendChild(el('article','char',charCard(c))); });
 
-  /* ---------- Navegação: capítulo atual ---------- */
+  /* ---------- Navegação: um capítulo por aba ---------- */
   var links = Array.prototype.slice.call(document.querySelectorAll('#navlist a'));
-  var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
-  if ('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(en){
-        if (en.isIntersecting){
-          links.forEach(function(a){ a.setAttribute('aria-current', a.getAttribute('href')==='#'+en.target.id ? 'true':'false'); });
-        }
-      });
-    }, {rootMargin:'-45% 0px -50% 0px'});
-    secs.forEach(function(s){ if(s) io.observe(s); });
+  var ids = links.map(function(a){ return a.getAttribute('href').slice(1); });
+  function showTab(id, focus){
+    if (ids.indexOf(id) < 0) id = ids[0];
+    links.forEach(function(a, i){
+      var on = ids[i] === id;
+      a.setAttribute('aria-selected', on ? 'true' : 'false');
+      a.tabIndex = on ? 0 : -1;
+      document.getElementById(ids[i]).hidden = !on;
+      if (on && focus) a.focus();
+    });
+    try { localStorage.setItem('ede-aba', id); } catch(e){}
   }
-  if (location.hash){ var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+  links.forEach(function(a, i){
+    a.setAttribute('role','tab');
+    a.setAttribute('aria-controls', ids[i]);
+    document.getElementById(ids[i]).setAttribute('role','tabpanel');
+    a.addEventListener('click', function(ev){
+      ev.preventDefault();
+      showTab(ids[i]);
+      var nav = document.querySelector('.nav');
+      if (nav.getBoundingClientRect().top <= 1) window.scrollTo(0, nav.offsetTop);
+    });
+    a.addEventListener('keydown', function(ev){
+      var d = ev.key==='ArrowRight'?1:ev.key==='ArrowLeft'?-1:0;
+      if (!d) return;
+      ev.preventDefault();
+      showTab(ids[(i+d+ids.length)%ids.length], true);
+    });
+  });
+  var start = location.hash.slice(1);
+  if (ids.indexOf(start) < 0){ try { start = localStorage.getItem('ede-aba') || ''; } catch(e){ start=''; } }
+  showTab(start);
 })();
 </script>
 
