@@ -11,32 +11,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: códice de coluna única com navegação fixa por capítulos; linha do tempo como trilho vertical por eras; fichas em grade para deuses, povos e personagens; ilhas como pranchas de duas colunas */
+/* Tema escuro único. Layout: códice de coluna única com navegação fixa por capítulos; linha do tempo como trilho vertical por eras; fichas em grade para deuses, povos e personagens; ilhas como pranchas de duas colunas */
 :root{
-  --bg:#ECEEF3;
-  --surface:#F8F9FB;
-  --ink:#1A1D2A;
-  --muted:#555B6F;
-  --line:#D2D6E0;
-  --brass:#7A5C19;
-  --vapor:#8A3784;
-  --vapor-2:#2B5AA3;
-  --alert:#9A3F12;
+  --bg:#0F111B;
+  --surface:#171A27;
+  --ink:#E7E4DB;
+  --muted:#9C9FB0;
+  --line:#2A2E41;
+  --brass:#D3AF63;
+  --vapor:#D684CC;
+  --vapor-2:#86ABEA;
+  --alert:#E8935F;
   --f-display:"Marcellus","Cormorant SC",Georgia,serif;
   --f-body:"Spectral",Georgia,"Times New Roman",serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
   --measure:66ch;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0F111B; --surface:#171A27; --ink:#E7E4DB; --muted:#9C9FB0; --line:#2A2E41;
-    --brass:#D3AF63; --vapor:#D684CC; --vapor-2:#86ABEA; --alert:#E8935F;
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0F111B; --surface:#171A27; --ink:#E7E4DB; --muted:#9C9FB0; --line:#2A2E41;
-  --brass:#D3AF63; --vapor:#D684CC; --vapor-2:#86ABEA; --alert:#E8935F;
   color-scheme:dark;
 }
 
@@ -196,11 +185,7 @@ tr:last-child td{border-bottom:0}
 .pips i.on{background:var(--brass)}
 .char p{font-size:.95rem}
 .char .kv{display:grid;gap:2px}
-.prologue{margin-top:28px;border:1px solid var(--line);background:var(--surface);padding:28px clamp(18px,4vw,40px);display:grid;gap:1em}
-.prologue p{max-width:var(--measure)}
-.prologue .beat{font-family:var(--f-display);font-size:1.5rem;color:var(--vapor)}
 
-footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem;color:var(--muted)}
 
 </style>
 
@@ -239,7 +224,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
     <div class="sec-head">
       <span class="label">Cronologia</span>
       <h2>Linha do tempo</h2>
-      <p>O calendário do Reino conta os anos a partir da Guerra da União: AGU (antes) e DGU (depois). A história começa no ano 7 DGU.</p>
+      <p>O calendário do Reino conta os anos em AGU e DGU, antes e depois da Guerra da União. Aqui o ano 0 é o fim da guerra: como ela durou dez anos, começou em 10 AGU. A história começa no ano 7 DGU.</p>
     </div>
     <div id="timeline"></div>
   </section>
@@ -263,6 +248,40 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
       <div class="force"><span class="label">A Matéria</span><h4>Realidade</h4><p>Responsável pela criação dos planos físicos e dos elementos fundamentais.</p></div>
       <div class="force"><span class="label">A Essência</span><h4>Alma</h4><p>Estabeleceu os ciclos de vida e morte e a centelha interna de cada ser.</p></div>
       <div class="force"><span class="label">O Véu</span><h4>Magia</h4><p>Cobriu o mundo com a energia que possibilita feitos impossíveis e o misticismo.</p></div>
+    </div>
+    <div class="sub-block">
+      <h3>As Eras de Terrenea</h3>
+      <div class="era">
+        <div class="era-head"><h3>Primeira Era</h3></div>
+        <div class="prose">
+          <p>Voranakain, o “Desafio do Criador”, foi a prova final imposta por Neannu para testar a têmpera de suas obras: destruição pura, feita para consumir o que não fosse forte o suficiente para resistir. No fim da Primeira Era ele foi derrubado, e a luta contra ele deu a forma final ao mundo e originou a geografia física de Terrenea.</p>
+        </div>
+      </div>
+      <div class="era">
+        <div class="era-head"><h3>Segunda Era</h3></div>
+        <div class="prose">
+          <p>Os Primeiros Arcanos, 12 semideuses filhos de Arcagma, ganharam o continente de Mysticum para experimentar os limites do domínio de seu pai. Seus experimentos foram tão grandiosos e desastrosos que criaram microclimas e rachaduras mágicas na terra, e atraíram um leviatã das profundezas, que após dias de luta recuou para o oceano.</p>
+          <p>Eles tentaram elevar todo o continente aos céus, mas a terra não suportou e se partiu em oito. Só a menor parte subiu: a ilha flutuante Callizuv, morada dos doze, batizada Estaleiro das Estrelas pelo brilho estelar de tudo o que ali era criado.</p>
+          <p>Os doze entraram em conflito sobre como administrar o Estaleiro. Sua maior criação, a MAV (Magia Arcana Viva), tomou como diretriz máxima “Os seres de Terrenea precisam evoluir”, eliminou oito arcanos e usou todas as criações dos doze contra os quatro restantes. Forçados a sair, eles desceram ao Arquipélago e desapareceram com o tempo. Esse foi o fim da Segunda Era.</p>
+          <ul class="facts">
+            <li><span>Abjuradores</span><span>Kel-gma e Jae-gma</span></li>
+            <li><span>Conjuradores</span><span>Seth-gma e Wig-gma</span></li>
+            <li><span>Adivinho</span><span>Bor-gma, antepassado de Jarael</span></li>
+            <li><span>Encantadora</span><span>Dao-gma</span></li>
+            <li><span>Evocadores</span><span>Scig-gma e Ev-gma</span></li>
+            <li><span>Ilusionista</span><span>Hen-gma</span></li>
+            <li><span>Necromante</span><span>Issy-gma</span></li>
+            <li><span>Transmutadoras</span><span>Tai-gma e Myr-gma</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="era">
+        <div class="era-head"><h3>Terceira Era</h3></div>
+        <div class="prose">
+          <p>Bor-gma, o último dos doze, viveu o restante da vida o mais próximo possível dos humanos, que chegavam ao Arquipélago vindos das terras do norte. Deixou herdeiros e um mapa fragmentado que permite acesso ao Estaleiro perdido, na esperança de que sua linhagem tentasse mais uma vez chegar a Callizuv.</p>
+          <p>Os elfos chegaram cerca de cem anos antes dos humanos, e os anões cerca de sessenta anos depois deles. As demais raças foram chegando alguns séculos mais tarde. Durante séculos, cada ilha teve um reino distinto, com invasões, guerras e disputas de terra entre eles.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -394,24 +413,11 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
     <div class="chars" id="chars-main"></div>
     <h3 style="margin:40px 0 16px">Secundários e duques</h3>
     <div class="chars" id="chars-sec"></div>
-    <div class="prologue">
-      <span class="label">Prólogo de Mirion</span>
-      <p>O céu estava em chamas sobre Dankand, cores avermelhadas entremeadas com as sombras profundas das nuvens carregadas. Mirion observava, imóvel sobre as muralhas da Academia Mistamare, sentindo o vento sussurrar segredos sombrios em seus ouvidos. Atrás dele, a cidade de Celand fervilhava alheia ao drama silencioso que ele vivia. À sua frente, nas mãos trêmulas, o antigo diário de Bor-gma parecia queimá-lo com verdades insuportáveis.</p>
-      <p class="beat">Richard mentiu.</p>
-      <p>Aquela frase ecoava, dolorosa, cortando-o mais profundamente do que qualquer lâmina jamais poderia. A série de visões causadas pelo poder do diário revelara uma traição muito mais cruel que um simples assassinato político: uma traição à sua própria criação. Seu mentor, seu protetor — o homem que considerava um pai após perder seu verdadeiro pai — era o assassino oculto por trás das cortinas, em um jogo de poder que alterou todo o destino do Arquipélago de Nea.</p>
-      <p>Mirion fechou o livro com violência, o estalo ecoando como um trovão antecipando tempestades maiores. Sentia queimar em seu coração uma fúria incontrolável, algo que ameaçava consumir não apenas ele, mas tudo à sua volta. Um pensamento sombrio, perigoso, tomava forma em sua mente:</p>
-      <p class="beat">Eles precisam pagar.</p>
-    </div>
   </section>
 
 </div>
 </main>
 
-<footer>
-  <div class="wrap">
-    <p>Estaleiro das Estrelas · Bíblia do Mundo de Terrenea. Material de referência do autor.</p>
-  </div>
-</footer>
 
 <script>
 (function(){
@@ -441,45 +447,20 @@ footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem
 
   /* ---------- Linha do tempo ---------- */
   var eras = [
-    { t:'A Criação', ev:[
-      {h:'Neannu', p:`O vazio primordial torna-se o todo e cria as Quatro Forças Primordiais: Tempo, Realidade, Alma e Magia.`},
-      {h:'Os Deuses Maiores e Menores', p:`As Quatro Forças forjam os Doze Deuses Maiores. Deles emanam os Doze Deuses Menores, criados para reger os aspectos mais específicos e humanos da vida.`},
-      {h:'Os deuses dos outros povos', p:`Para os anões, Domhaín é filho direto da vontade de Neannu e forjou os Anões das Rochas dos veios de minério mais puros. Para os Gaedins, Gaed nasceu no exato momento em que Neannu terminou de moldar o horizonte e sorriu.`}
+    { t:'Antes da Guerra', span:'AGU', ev:[
+      {d:'Depois de 93 AGU', h:'Chegam os Montanheses', p:`Poucos, vindos das terras do norte há menos de 100 anos, instalam-se somente nos picos gelados de Anyaji.`},
+      {d:'10,5 AGU', h:'O assassinato do rei de Dankand', p:`Seis meses antes da Guerra da União, o pai de Mirion é brutalmente assassinado, primeiro passo do plano de Karth Ordon e Richard Ohlen para unificar as sete ilhas. Ohlen, até então braço direito e amigo íntimo do rei, assume imediatamente o reinado de Dankand.`}
     ]},
-    { t:'Primeira Era', ev:[
-      {h:'Voranakain, o Desafio do Criador', p:`A prova final imposta por Neannu para testar a têmpera de suas obras: destruição pura, feita para consumir o que não fosse forte o suficiente para resistir.`},
-      {d:'Fim da Primeira Era', h:'A queda de Voranakain', p:`O Flagelo da Criação é derrubado. A luta contra ele dá a forma final ao mundo e origem à geografia física de Terrenea. Cada cultura reivindica o feito, mas quase nada se sabe sobre sua morte.`}
-    ]},
-    { t:'Segunda Era', ev:[
-      {h:'Mysticum e os Primeiros Arcanos', p:`Os 12 Primeiros Arcanos, semideuses filhos de Arcagma, ganham o continente de Mysticum para criar e experimentar os limites do domínio do pai: Kel-gma e Jae-gma, os abjuradores; Seth-gma e Wig-gma, os conjuradores; Bor-gma, o adivinho; Dao-gma, a encantadora; Scig-gma e Ev-gma, os evocadores; Hen-gma, a ilusionista; Issy-gma, o necromante; Tai-gma e Myr-gma, as transmutadoras. Os Selkath são um dos povos originários de Mysticum.`},
-      {h:'Microclimas e o leviatã', p:`Os experimentos são tão grandiosos e desastrosos que criam microclimas e rachaduras mágicas na terra, e atraem um leviatã das profundezas. Após dias de luta, os arcanos o fazem recuar para o oceano, mas ele claramente voltaria a ser um problema.`},
-      {h:'O continente se parte em oito', p:`Os doze tentam elevar todo o continente aos céus; a terra não suporta e se parte em oito. Só a menor parte sobe: a ilha flutuante Callizuv, morada dos arcanos, batizada Estaleiro das Estrelas pelo brilho estelar de tudo o que ali era criado.`},
-      {h:'A MAV se volta contra os doze', p:`Os arcanos entram em conflito sobre como administrar o Estaleiro. Sua maior criação, a Magia Arcana Viva, toma como diretriz máxima “Os seres de Terrenea precisam evoluir”, elimina oito arcanos e usa todas as criações dos doze contra os quatro restantes.`},
-      {d:'Fim da Segunda Era', h:'Os quatro descem ao Arquipélago', p:`Forçados a sair do Estaleiro, os últimos arcanos descem ao Arquipélago e desaparecem com o tempo.`}
-    ]},
-    { t:'Terceira Era', ev:[
-      {d:'Cerca de cem anos antes dos humanos', h:'Chegam os elfos', p:`Os elfos se estabelecem no Arquipélago.`},
-      {h:'Chegam os humanos', p:`Os humanos chegam das terras do norte. Bor-gma, o último dos doze, vive o restante da vida o mais próximo possível deles. Deixa herdeiros e um mapa fragmentado que permite acesso ao Estaleiro perdido, na esperança de que sua linhagem tente mais uma vez chegar a Callizuv.`},
-      {d:'Cerca de sessenta anos depois dos humanos', h:'Chegam os anões', p:`Os anões se estabelecem no Arquipélago.`},
-      {d:'Alguns séculos depois', h:'Chegam as demais raças', p:`Os outros povos chegam ao Arquipélago. Os Selkath vão perdendo território até restarem apenas em Manty.`},
-      {d:'Durante séculos', h:'Reinos rivais', p:`Cada ilha tem um reino distinto dos demais. Invasões, guerras e disputas de terra acontecem entre eles.`},
-      {d:'Há menos de 100 anos', h:'Chegam os Montanheses', p:`Poucos, vindos das terras do norte, instalam-se somente nos picos gelados de Anyaji.`}
-    ]},
-    { t:'A Guerra da União', span:'10 anos · fim da contagem AGU', ev:[
-      {h:'Nasce a Ordem Rubra', p:`A família Ordon, presente na nobreza de duas grandes cidades, cria a Ordem Rubra com Karth Ordon e outras famílias nobres de Risian (Sirath) e Bilard (Manty), para pôr fim às guerras e unificar os reinos sob uma só bandeira.`},
-      {d:'Seis meses antes da Guerra da União', h:'O assassinato do rei de Dankand', p:`O pai de Mirion é brutalmente assassinado, primeiro passo do plano de Karth Ordon e Richard Ohlen para unificar as sete ilhas. Ohlen, até então braço direito e amigo íntimo do rei, assume imediatamente o reinado de Dankand.`},
-      {d:'Primeiro ano da Guerra da União', h:'A fundação de Elderlon', p:`Elfos saem de Kirak em busca de paz e isolamento e fundam o vilarejo de Elderlon, em Sirath.`},
-      {d:'Durante a guerra', h:'As ilhas caem uma a uma', p:`A investida da Ordem Rubra sobre o primeiro reino é bem-sucedida; as demais geram guerras ainda mais terríveis. Lia, irmã de Karth Ordon, morre na Cidade Baixa de Risian. O rei de Kirak isola a ilha e é deposto pela facção Taurak, que se alia à Ordem Rubra. Mhurren Kras se vinga do antigo rei de Nozerak. Em Anyaji, a insurgência militar de Dantheris Stonewolf fracassa antes da união definitiva.`},
-      {d:'Fim da Guerra da União', h:'O Reino das Ilhas', p:`Karth Ordon governa de Risian e decreta que cada uma das demais ilhas terá um Ducado, com seis Duques governando em seu nome. O calendário passa a contar os anos em AGU e DGU.`}
+    { t:'A Guerra da União', span:'10 AGU → 0 DGU', ev:[
+      {d:'10 AGU', h:'Começa a Guerra da União', p:`A Ordem Rubra, criada por Karth Ordon e famílias nobres de Risian (Sirath) e Bilard (Manty), toma o primeiro reino. As demais investidas geram guerras ainda mais terríveis que as do passado. No primeiro ano da guerra, elfos saem de Kirak em busca de paz e isolamento e fundam o vilarejo de Elderlon, em Sirath.`},
+      {d:'10 AGU – 0 DGU', h:'As ilhas caem uma a uma', p:`Lia, irmã de Karth Ordon, morre na Cidade Baixa de Risian. O rei de Kirak isola a ilha e é deposto pela facção Taurak, que se alia à Ordem Rubra. Mhurren Kras se vinga do antigo rei de Nozerak. Em Anyaji, a insurgência militar de Dantheris Stonewolf fracassa antes da união definitiva.`},
+      {d:'0 DGU', h:'O Reino das Ilhas', p:`Fim da guerra. Karth Ordon governa de Risian e decreta que cada uma das demais ilhas terá um Ducado, com seis Duques governando em seu nome.`}
     ]},
     { t:'Depois da Guerra', span:'DGU', ev:[
-      {h:'As escadarias de Risian', p:`Pelo trauma da morte de Lia, o Rei destrói as escadarias entre a Cidade Alta e a Cidade Baixa e as substitui por elevadores arcanos operados exclusivamente pela Guarda Real.`},
-      {d:'Seis meses após o fim da Guerra da União', h:'A câmara sob o Lago Khoonda', p:`Numa missão avançada da Academia, Mirion Sudren e Jarael Taralvin caem numa câmara subterrânea secreta em Dankand: um monolito com dois orbes mágicos e um baú com o diário de Bor-gma, que é também um grimório. Num dos orbes está um fragmento do mapa para o Estaleiro das Estrelas.`},
-      {h:'Mirion descobre a verdade e foge', p:`Um ritual do diário, no antigo palácio de sua família, mostra a Mirion o papel de Richard Ohlen no assassinato do pai. Ele confronta Ohlen, foge da Academia com o grimório e o fragmento e parte em busca dos demais fragmentos, guiado por visões.`},
-      {d:'1 ano após o fim da Guerra da União', h:'O cataclisma e o Vapor Arcano', p:`Um grande cataclisma, aparentemente originado num ponto do oceano próximo a Manty, causa maremotos que destroem algumas cidades. Surgem fontes de Vapor Arcano: uma em Risian, uma em Monte Tempestade e duas no oceano.`},
-      {d:'Quase seis anos', h:'A revolução arcanopunk', p:`O Vapor Arcano é estudado, tratado e usado pela Academia Mistamare, pela Ordem Rubra e pelos anões de Monte Tempestade. Muda o uso da magia e das runas no cotidiano das ilhas, e atiça facções e guildas a contrabandeá-lo. A refinaria da Cidade Alta espalha uma doença pela Cidade Baixa.`},
-      {d:'Ano 7 DGU', h:'O presente', p:`Um período de paz reina no Reino das Ilhas. Jarael é a mais jovem integrante do conselho da Academia. Somente Richard Ohlen, Jarael e um pequeno conselho de Mistamare sabem da possível existência do Estaleiro das Estrelas.`},
-      {d:'Mais de seis anos depois da fuga de Mirion', h:'O aviso do espião', p:`Um espião da Ordem Rubra informa ao Duque de Dankand que Mirion se aliou ao Chifre Negro. O Ducado e o Conselho da Academia temem o que Mirion possa ter exposto e se ele encontrou a ilha flutuante. O Rei precisa ser informado do perigo iminente.`}
+      {d:'0,5 DGU', h:'A câmara sob o Lago Khoonda', p:`Numa missão avançada da Academia, Mirion Sudren e Jarael Taralvin caem numa câmara subterrânea secreta em Dankand e encontram o diário de Bor-gma e um fragmento do mapa para o Estaleiro das Estrelas. Mirion foge da Academia após discutir com o Duque e diretor de Mistamare, levando o diário e o fragmento.`},
+      {d:'1 DGU', h:'O cataclisma e o Vapor Arcano', p:`Um grande cataclisma, aparentemente originado num ponto do oceano próximo a Manty, causa maremotos que destroem algumas cidades. Surgem fontes de Vapor Arcano: uma em Risian, uma em Monte Tempestade e duas no oceano.`},
+      {d:'1 – 7 DGU', h:'A revolução arcanopunk', p:`Por quase seis anos, o Vapor Arcano é estudado, tratado e usado pela Academia Mistamare, pela Ordem Rubra e pelos anões de Monte Tempestade. Muda o uso da magia e das runas no cotidiano das ilhas e atiça facções e guildas a contrabandeá-lo.`},
+      {d:'7 DGU', h:'O presente', p:`Um período de paz reina no Reino das Ilhas. Jarael é a mais jovem integrante do conselho da Academia. Mais de seis anos depois da fuga de Mirion, um espião da Ordem Rubra informa ao Duque de Dankand que Mirion se aliou ao Chifre Negro. O Rei precisa ser informado do perigo iminente.`}
     ]}
   ];
   var tl = document.getElementById('timeline');
