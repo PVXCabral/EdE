@@ -184,11 +184,10 @@ tr:last-child td{border-bottom:0}
 .map img{display:block;width:100%;height:auto}
 .map figcaption{padding:10px 14px;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line)}
 .portrait{display:block;width:100%;aspect-ratio:4/5;max-width:100%;object-fit:cover;object-position:center 20%;border:1px solid var(--line);margin-bottom:4px;background:var(--bg)}
-.org{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:28px;align-items:start}
-.org figure{margin:0;border:1px solid var(--line);background:var(--surface)}
-.org figure img{display:block;width:100%;height:auto}
-.org figcaption{padding:8px 12px;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line)}
-@media (max-width:640px){.org{grid-template-columns:1fr}.org figure{max-width:220px}}
+.faction.featured{grid-column:1/-1;grid-template-columns:120px minmax(0,1fr);gap:18px;align-items:start}
+.faction.featured img{display:block;width:120px;height:auto;border:1px solid var(--line);background:var(--surface)}
+.faction.featured div{display:grid;gap:4px;align-content:start;max-width:var(--measure)}
+@media (max-width:440px){.faction.featured{grid-template-columns:88px minmax(0,1fr)}.faction.featured img{width:88px}}
 
 /* Povos */
 .species{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
@@ -610,13 +609,7 @@ tr:last-child td{border-bottom:0}
     </div>
     <div class="sub-block">
       <h3>Organizações e facções</h3>
-      <div class="org">
-        <figure>
-          <img src="img/faccoes.jpg" alt="Emblema da Academia Mistamare: um livro aberto com uma chama, num octógono" width="933" height="1400" loading="lazy">
-          <figcaption>Academia Mistamare</figcaption>
-        </figure>
-        <div class="factions" id="factions"></div>
-      </div>
+      <div class="factions" id="factions"></div>
     </div>
   </section>
 
@@ -867,9 +860,9 @@ tr:last-child td{border-bottom:0}
 
   /* ---------- Facções ---------- */
   var factions = [
+    ['Academia Mistamare','O maior centro de aprendizado mágico do Reino e um poder político. Dirigida por Ohlen; Jarael é a mais jovem do conselho.'],
     ['Ordem Rubra','Fundada pelos Ordon e nobres de Risian e Bilard para unificar as ilhas. Hoje refina Vapor Arcano e mantém espiões.'],
     ['Chifre Negro','A maior facção contrária à unificação. Cresce na surdina em Dankand, usando o descontentamento e as antigas ruínas mágicas da ilha para arquitetar a queda da união.'],
-    ['Academia Mistamare','O maior centro de aprendizado mágico do Reino e um poder político. Dirigida por Ohlen; Jarael é a mais jovem do conselho.'],
     ['Artífices de Nea','Elite de estudiosos arcanos e engenheiros rúnicos, sobretudo formados em Mistamare e financiados por Ohlen.'],
     ['Guarda Real','Opera com exclusividade os elevadores arcanos entre as Cidades Alta e Baixa de Risian.'],
     ['Clã Wuttes','Império comercial de destilados em Taosand, sediado no Palácio Toksand.'],
@@ -877,7 +870,13 @@ tr:last-child td{border-bottom:0}
     ['Guildas da Cidade Baixa','Controlam o território pobre de Risian e o contrabando de Vapor Arcano.']
   ];
   var fx = document.getElementById('factions');
-  factions.forEach(function(f){ fx.appendChild(el('div','faction','<h4>'+f[0]+'</h4><p>'+f[1]+'</p>')); });
+  factions.forEach(function(f){
+    if (f[0]==='Academia Mistamare'){
+      fx.appendChild(el('div','faction featured','<img src="img/faccoes.jpg" alt="Emblema da Academia Mistamare: um livro aberto com uma chama, num octógono" width="933" height="1400" loading="lazy"><div><h4>'+f[0]+'</h4><p>'+f[1]+'</p></div>'));
+    } else {
+      fx.appendChild(el('div','faction','<h4>'+f[0]+'</h4><p>'+f[1]+'</p>'));
+    }
+  });
 
   /* ---------- Personagens ---------- */
   function pips(n){ var s='<span class="pips" aria-label="'+n+' de 5">'; for (var i=1;i<=5;i++) s+='<i class="'+(i<=n?'on':'')+'"></i>'; return s+'</span>'; }
