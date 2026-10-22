@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Estaleiro das Estrelas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: códice de coluna única com navegação fixa por capítulos; linha do tempo como trilho vertical por eras; fichas em grade para deuses, povos e personagens; ilhas como pranchas de duas colunas */
+:root{
+  --bg:#ECEEF3;
+  --surface:#F8F9FB;
+  --ink:#1A1D2A;
+  --muted:#555B6F;
+  --line:#D2D6E0;
+  --brass:#7A5C19;
+  --vapor:#8A3784;
+  --vapor-2:#2B5AA3;
+  --alert:#9A3F12;
+  --f-display:"Marcellus","Cormorant SC",Georgia,serif;
+  --f-body:"Spectral",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --measure:66ch;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F111B; --surface:#171A27; --ink:#E7E4DB; --muted:#9C9FB0; --line:#2A2E41;
+    --brass:#D3AF63; --vapor:#D684CC; --vapor-2:#86ABEA; --alert:#E8935F;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F111B; --surface:#171A27; --ink:#E7E4DB; --muted:#9C9FB0; --line:#2A2E41;
+  --brass:#D3AF63; --vapor:#D684CC; --vapor-2:#86ABEA; --alert:#E8935F;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1.0625rem;line-height:1.62}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;line-height:1.15}
+p{margin:0}
+a{color:var(--vapor-2)}
+:focus-visible{outline:2px solid var(--vapor-2);outline-offset:2px}
+
+.label{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.prose{display:grid;gap:1em;max-width:var(--measure)}
+.muted{color:var(--muted)}
+
+/* Navegação */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav ul{list-style:none;margin:0;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin}
+.nav a{display:block;white-space:nowrap;padding:12px 10px;font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--ink)}
+.nav a[aria-current="true"]{color:var(--ink);border-bottom-color:var(--brass)}
+
+/* Abertura */
+.hero{padding-block:56px 40px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:center}
+.hero h1{font-size:clamp(2.4rem,6vw,4.4rem);letter-spacing:.02em}
+.hero .sub{font-family:var(--f-mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);margin-bottom:14px}
+.hero .lede{margin-top:20px;max-width:60ch;font-size:1.15rem}
+.hero .sources{margin-top:20px;font-size:.9rem;color:var(--muted);max-width:62ch}
+.emblem{width:clamp(120px,18vw,190px);height:auto}
+@media (max-width:640px){.hero{grid-template-columns:1fr}.emblem{order:-1;width:110px}}
+
+/* Seções */
+section{padding-block:56px;border-top:1px solid var(--line);scroll-margin-top:48px}
+.sec-head{display:grid;gap:8px;margin-bottom:28px}
+.sec-head h2{font-size:clamp(1.8rem,3.6vw,2.5rem)}
+.sec-head p{max-width:var(--measure);color:var(--muted)}
+h3{font-size:1.45rem}
+.sub-block{display:grid;gap:18px;margin-top:40px}
+
+.notice{border:1px solid var(--line);border-left:3px solid var(--alert);background:var(--surface);padding:14px 18px;max-width:78ch;font-size:.97rem}
+.notice strong{font-weight:600}
+
+/* Linha do tempo */
+.era{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;margin-top:36px}
+.era-head{position:relative}
+.era-head h3{font-size:1.3rem}
+.era-head .span{font-family:var(--f-mono);font-size:.78rem;color:var(--brass);margin-top:6px}
+.era-head p{margin-top:8px;font-size:.92rem;color:var(--muted)}
+.events{list-style:none;margin:0;padding:0 0 0 22px;border-left:1px solid var(--line);display:grid;gap:22px}
+.ev{position:relative;display:grid;gap:4px;min-width:0}
+.ev::before{content:"";position:absolute;left:-27px;top:.55em;width:9px;height:9px;border-radius:50%;background:var(--bg);border:2px solid var(--brass)}
+.ev.saga::before{border-color:var(--vapor);background:var(--vapor)}
+.ev .when{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.ev .date{font-family:var(--f-mono);font-size:.8rem;color:var(--brass);font-variant-numeric:tabular-nums}
+.ev h4{font-family:var(--f-body);font-weight:600;font-size:1.05rem}
+.ev p{max-width:var(--measure)}
+.chip{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border:1px solid var(--line);border-radius:999px;color:var(--muted);white-space:nowrap}
+.chip.inf{border-color:var(--alert);color:var(--alert)}
+.chip.src{border-style:dashed}
+@media (max-width:760px){.era{grid-template-columns:1fr;gap:14px}}
+
+/* Cosmologia */
+.forces{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.force{background:var(--surface);padding:18px;display:grid;gap:6px;align-content:start}
+.force h4{font-size:1.3rem}
+.force .label{color:var(--vapor)}
+@media (max-width:820px){.forces{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:440px){.forces{grid-template-columns:1fr}}
+.origin{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:start;margin-bottom:28px}
+.origin .glyph{font-family:var(--f-display);font-size:3.2rem;line-height:1;color:var(--brass)}
+
+/* Abas de panteões */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+.tab{font:inherit;font-family:var(--f-mono);font-size:.76rem;letter-spacing:.05em;text-transform:uppercase;padding:8px 12px;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:4px;cursor:pointer}
+.tab:hover{color:var(--ink);border-color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pan-intro{display:grid;gap:10px;max-width:var(--measure);margin-bottom:24px}
+.pan-intro .sym{font-style:italic;color:var(--muted)}
+.gods{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.god{background:var(--surface);border:1px solid var(--line);padding:18px;display:grid;gap:10px;align-content:start;min-width:0}
+.god h4{font-size:1.35rem}
+.god .ep{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--brass)}
+.god dl{margin:0;display:grid;gap:6px}
+.god dt{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.god dd{margin:0;font-size:.95rem}
+.god blockquote{margin:4px 0 0;padding-left:12px;border-left:2px solid var(--vapor);font-style:italic;font-size:.93rem;color:var(--muted)}
+.god.wide{grid-column:1/-1}
+.god.wide blockquote{max-width:var(--measure)}
+.group-title{grid-column:1/-1;margin-top:18px}
+.group-title:first-child{margin-top:0}
+
+/* Tabela da magia */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:.95rem}
+th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}
+th{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td:first-child{font-family:var(--f-display);font-size:1.1rem;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.facts{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.facts li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding-bottom:8px;border-bottom:1px dotted var(--line);font-size:.95rem}
+.facts li span:first-child{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+@media (max-width:440px){.facts li{grid-template-columns:1fr;gap:2px}}
+
+/* Ilhas */
+.islands{display:grid;gap:20px}
+.island{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);border:1px solid var(--line);background:var(--surface)}
+.island .info{padding:24px;display:grid;gap:14px;align-content:start}
+.island .head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 14px}
+.island h3{font-size:1.9rem;letter-spacing:.04em}
+.island .tag{font-style:italic;color:var(--muted)}
+.island .places{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.island .places b{font-weight:600}
+.island .vision{padding:24px;border-left:1px solid var(--line);display:grid;gap:10px;align-content:start;background:linear-gradient(160deg,color-mix(in srgb,var(--vapor-2) 7%,transparent),color-mix(in srgb,var(--vapor) 9%,transparent))}
+.island .vision .label{color:var(--vapor)}
+.island .vision p{font-style:italic;font-size:.95rem}
+@media (max-width:820px){.island{grid-template-columns:1fr}.island .vision{border-left:0;border-top:1px solid var(--line)}}
+
+/* Povos */
+.species{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.species{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.species{grid-template-columns:1fr}}
+.sp{border:1px solid var(--line);background:var(--surface);padding:18px;display:grid;gap:10px;align-content:start;min-width:0}
+.sp h4{font-size:1.35rem}
+.magic{display:flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+.bar{display:inline-flex;gap:3px}
+.bar i{width:14px;height:6px;background:var(--line);display:block}
+.bar i.on{background:var(--vapor)}
+.sp p{font-size:.94rem}
+.sp ul{margin:0;padding-left:18px;font-size:.92rem;display:grid;gap:4px}
+
+/* Política */
+.duke-tbl td:first-child{white-space:nowrap}
+.factions{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.faction{border-top:2px solid var(--brass);padding-top:10px;display:grid;gap:4px}
+.faction h4{font-family:var(--f-body);font-weight:600;font-size:1.02rem}
+.faction p{font-size:.93rem;color:var(--muted)}
+
+/* Personagens */
+.chars{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.char{border:1px solid var(--line);background:var(--surface);padding:20px;display:grid;gap:12px;align-content:start;min-width:0}
+.char h4{font-size:1.45rem}
+.char .ep{font-style:italic;color:var(--muted);margin-top:-6px}
+.stats{display:grid;gap:5px}
+.stat{display:grid;grid-template-columns:118px auto;align-items:center;gap:8px;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.pips{display:inline-flex;gap:4px}
+.pips i{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--brass);display:block}
+.pips i.on{background:var(--brass)}
+.char p{font-size:.95rem}
+.char .kv{display:grid;gap:2px}
+.prologue{margin-top:28px;border:1px solid var(--line);background:var(--surface);padding:28px clamp(18px,4vw,40px);display:grid;gap:1em}
+.prologue p{max-width:var(--measure)}
+.prologue .beat{font-family:var(--f-display);font-size:1.5rem;color:var(--vapor)}
+
+/* Saga */
+.books{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.books{grid-template-columns:1fr}}
+.book{border:1px solid var(--line);background:var(--surface);padding:22px;display:grid;gap:12px;align-content:start}
+.book .num{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--vapor)}
+.book h3{font-size:1.7rem}
+.book p{font-size:.96rem}
+.thesis{font-size:1.18rem;max-width:62ch;margin-bottom:28px}
+
+/* Pontas soltas */
+.flags{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.flag{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.flag:last-child{border-bottom:0}
+.flag .kind{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding-top:4px}
+.flag .kind.k-contra{color:var(--alert)}
+.flag .kind.k-decidir{color:var(--vapor)}
+.flag .kind.k-lacuna{color:var(--vapor-2)}
+.flag .kind.k-grafia{color:var(--muted)}
+.flag h4{font-family:var(--f-body);font-weight:600;font-size:1.08rem;margin-bottom:6px}
+.flag p{max-width:var(--measure);font-size:.97rem}
+@media (max-width:560px){.flag{grid-template-columns:1fr;gap:4px}}
+
+footer{border-top:1px solid var(--line);padding-block:28px 48px;font-size:.88rem;color:var(--muted)}
+
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<nav class="nav" aria-label="Capítulos">
+  <div class="wrap">
+    <ul id="navlist">
+      <li><a href="#linha-do-tempo">Linha do tempo</a></li>
+      <li><a href="#cosmologia">Cosmologia</a></li>
+      <li><a href="#panteoes">Panteões</a></li>
+      <li><a href="#magia">Magia e técnica</a></li>
+      <li><a href="#ilhas">As sete ilhas</a></li>
+      <li><a href="#povos">Povos</a></li>
+      <li><a href="#politica">Política</a></li>
+      <li><a href="#personagens">Personagens</a></li>
+      <li><a href="#saga">A saga</a></li>
+      <li><a href="#pontas-soltas">Pontas soltas</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <p class="sub">Terrenea · Arquipélago de Nea · Ano 7 DGU</p>
+      <h1>Estaleiro das Estrelas</h1>
+      <p class="lede">Um épico de fantasia arcanopunk sobre o preço do progresso desmedido, o peso do destino e uma família improvável forjada pelo trauma, num mundo cinza onde a linha entre magia e máquina foi borrada.</p>
+      <p class="sources">Compilado da <em>Bíblia do Mundo</em> (versão de 24 ago 2026), com complementos de <em>Terrenea – Worldbuilding</em> e <em>Ideias e Prompts</em>. Onde as fontes divergem, a Bíblia prevalece e a divergência vai para <a href="#pontas-soltas">Pontas soltas</a>.</p>
+    </div>
+    <svg class="emblem" id="emblem" viewBox="0 0 100 100" role="img" aria-label="Vitral hexagonal rachado em doze partes, símbolo do Panteão Humano"></svg>
+  </header>
+
+  <!-- LINHA DO TEMPO -->
+  <section id="linha-do-tempo">
+    <div class="sec-head">
+      <span class="label">Cronologia</span>
+      <h2>Linha do tempo</h2>
+      <p>O calendário do Reino conta os anos a partir da Guerra da União: AGU (antes) e DGU (depois). A história começa no ano 7 DGU.</p>
+    </div>
+    <p class="notice"><strong>Linha do tempo reconstruída.</strong> A versão da conversa “Organizar worldbuilding da saga” não estava acessível nesta sessão. Esta cronologia foi montada a partir dos documentos do Drive. Eventos marcados <span class="chip inf">data inferida</span> não têm data explícita nas fontes; a posição deles é dedução a partir de outros eventos.</p>
+    <div id="timeline"></div>
+  </section>
+
+  <!-- COSMOLOGIA -->
+  <section id="cosmologia">
+    <div class="sec-head">
+      <span class="label">Metafísica</span>
+      <h2>Cosmologia de Terrenea</h2>
+    </div>
+    <div class="origin">
+      <span class="glyph" aria-hidden="true">N</span>
+      <div class="prose">
+        <h3>A Origem: Neannu</h3>
+        <p>A primeira existência. Neannu é o vazio primordial que se tornou o todo, a vontade que deu origem ao universo de Terrenea. Ela é a unidade que sustenta a existência.</p>
+        <p class="muted">Criadas por Neannu para moldar a física e a metafísica do mundo, as Quatro Forças Primordiais são os arquitetos que forjaram os Deuses Maiores.</p>
+      </div>
+    </div>
+    <div class="forces">
+      <div class="force"><span class="label">O Fluxo</span><h4>Tempo</h4><p>Permite a evolução, a história e o movimento constante da existência.</p></div>
+      <div class="force"><span class="label">A Matéria</span><h4>Realidade</h4><p>Responsável pela criação dos planos físicos e dos elementos fundamentais.</p></div>
+      <div class="force"><span class="label">A Essência</span><h4>Alma</h4><p>Estabeleceu os ciclos de vida e morte e a centelha interna de cada ser.</p></div>
+      <div class="force"><span class="label">O Véu</span><h4>Magia</h4><p>Cobriu o mundo com a energia que possibilita feitos impossíveis e o misticismo.</p></div>
+    </div>
+  </section>
+
+  <!-- PANTEÕES -->
+  <section id="panteoes">
+    <div class="sec-head">
+      <span class="label">Fé</span>
+      <h2>Panteões</h2>
+      <p>Cada povo do Arquipélago lê o divino à sua maneira. Os mesmos poderes aparecem sob nomes, formas e genealogias diferentes.</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Panteões" id="pan-tabs"></div>
+    <div id="pan-panel" role="tabpanel"></div>
+  </section>
+
+  <!-- MAGIA -->
+  <section id="magia">
+    <div class="sec-head">
+      <span class="label">Sistema</span>
+      <h2>Magia e técnica</h2>
+      <p>O Véu é a fonte de todo o poder mágico. Cada vertente o alcança por um caminho diferente, e cada uma cobra um preço diferente.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Vertente</th><th>Fonte</th><th>Como se conjura</th><th>O preço</th></tr></thead>
+        <tbody>
+          <tr><td>Arcana</td><td>Manipulação do Véu</td><td>O mago calcula sua posição em relação aos trópicos do mundo (com instrumentos) e a área geométrica da magia, “puxa” o Véu pela concentração e o canaliza com palavras e gestos, como numa receita.</td><td>Exaustão do corpo e da mente. Sem preparo, ocorre a <em>queima da mente</em>, que pode deixar o conjurador como uma casca vazia. Intempéries extremas ou desorientação espacial impedem o cálculo e, portanto, a magia.</td></tr>
+          <tr><td>Runas</td><td>A escrita dos Deuses</td><td>Inscrições de um alfabeto rúnico. O material onde a runa é gravada e a combinação de runas num mesmo lugar alteram o efeito. Base da magia divina, druídica, bárdica e da tecnologia.</td><td>Efeitos adversos quando o material ou a combinação estão errados.</td></tr>
+          <tr><td>Divina</td><td>Fé canalizando o Véu ou a Alma</td><td>O fiel porta o símbolo rúnico da divindade e profere as preces corretas. Acólitos e clérigos recebem em ritual cetros capazes de desenhar a runa do seu Deus, um recurso limitado para improvisar.</td><td>Queimaduras nas mãos e pernas, dores de cabeça lancinantes, desmaio. Se a fé falhar por um instante, o símbolo se desfaz e o cetro se estilhaça.</td></tr>
+          <tr><td>Druídica / Xamânica</td><td>Manipulação da Alma</td><td>Troca equivalente: o conjurador conhece a essência do que manipula e converte a força da alma de uma fonte em outra. Usada sobretudo por elfos e orcs.</td><td>A mais perigosa. A fonte adoece e se quebra; sem fonte externa, o conjurador extrai a própria alma, com perda de membros ou morte.</td></tr>
+          <tr><td>Bárdica</td><td>Som que direciona o Véu</td><td>Instrumentos mágicos criados por ritual de comunhão que dá poder às runas gravadas na confecção. Entram em ressonância com a emoção do artista; todo efeito é uma onda sonora.</td><td>Emocional e sensorial: tristeza profunda ou apatia por dias, surdez temporária, tímpanos sangrando, cordas vocais danificadas, perda de um sentido.</td></tr>
+          <tr><td>Obscura</td><td>Um ser poderoso como catalisador</td><td>Um ser incrivelmente poderoso atua como catalisador do Véu para outro usuário. <span class="muted">(Só em <em>Terrenea – Worldbuilding</em>.)</span></td><td class="muted">Não definido.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="two sub-block">
+      <div class="prose">
+        <h3>Vapor Arcano</h3>
+        <p>Gás volátil e natural, resultante do atrito físico e metafísico entre a realidade e o Véu. Uma fumaça densa que distorce a luz em refrações azuis e magenta, com odor próximo ao ozônio.</p>
+        <p>Emergiu das profundezas cerca de um ano após o fim da Guerra da União, depois de um cataclisma que parece ter se originado no oceano perto de Manty. Seu aparecimento alterou os arredores das fontes e a fisiologia de algumas criaturas.</p>
+        <p>O refino pela Academia Mistamare, pela Ordem Rubra e pelos anões de Monte Tempestade abriu uma revolução tecnológica arcanopunk. O custo da mineração e do refino está adoecendo a base da sociedade na capital.</p>
+        <ul class="facts">
+          <li><span>Fontes naturais</span><span>4: Risian, Monte Tempestade e duas no oceano</span></li>
+          <li><span>Descoberta</span><span>≈ 1 DGU</span></li>
+          <li><span>Resíduo</span><span>Lodo tóxico despejado nos esgotos e catacumbas de Risian</span></li>
+        </ul>
+      </div>
+      <div class="prose">
+        <h3>Engenharia Rúnica</h3>
+        <p>A espinha dorsal tecnológica do Arquipélago: a fusão entre mecânica tradicional, caligrafia mágica e, agora, a termodinâmica do Vapor Arcano. Engrenagens já moviam moinhos d’água, guindastes e instrumentos de astronomia; as runas multiplicam velocidade e efeitos.</p>
+        <p>Os elevadores rúnicos são o exemplo clássico: engrenagens e runas numa armação que eleva e baixa um monolito de pedra carregado de runas que se atraem e se repelem.</p>
+        <p>O <strong>indutor arcano</strong>, um cilindro de Vapor Arcano pressurizado com uma runa de propagação cravejada no recipiente, gera um campo místico invisível que tornou possíveis novas propulsões e máquinas.</p>
+        <p>Os estudiosos e engenheiros de elite, sobretudo os formados em Mistamare e financiados pelo Duque Richard Ohlen, passaram a se chamar <strong>Artífices de Nea</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ILHAS -->
+  <section id="ilhas">
+    <div class="sec-head">
+      <span class="label">Geografia</span>
+      <h2>As sete ilhas do Reino</h2>
+      <p>O antigo continente de Mysticum partiu-se em oito pedaços. O menor subiu aos céus como Callizuv; os sete restantes formam o Arquipélago de Nea. Cada ilha guarda um monolito de poder com um fragmento do mapa para o Estaleiro, e cada fragmento mostra em visão o próximo.</p>
+    </div>
+    <div class="islands" id="islands"></div>
+  </section>
+
+  <!-- POVOS -->
+  <section id="povos">
+    <div class="sec-head">
+      <span class="label">Terceira Era</span>
+      <h2>Povos do Arquipélago</h2>
+      <p>Os elfos chegaram cerca de cem anos antes dos humanos, vindos do norte; os anões cerca de sessenta anos depois deles; as demais raças, séculos mais tarde. Só os Selkath já estavam lá.</p>
+    </div>
+    <div class="species" id="species"></div>
+  </section>
+
+  <!-- POLÍTICA -->
+  <section id="politica">
+    <div class="sec-head">
+      <span class="label">Contexto político-social</span>
+      <h2>O Reino das Ilhas</h2>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Durante séculos cada ilha teve seu próprio reino, com invasões, guerras e disputas de terra entre eles. A família Ordon, presente na nobreza de duas grandes cidades, viu ali a chance de tomar o Arquipélago.</p>
+        <p>Karth Ordon e outras famílias nobres de Risian (Sirath) e Bilard (Manty) criaram a <strong>Ordem Rubra</strong> para acabar com as guerras e unificar os reinos sob uma só bandeira. A primeira investida deu certo; as demais geraram guerras piores que as do passado. Esses dez anos ficaram conhecidos como a <strong>Guerra da União</strong>.</p>
+        <p>Terminada a guerra, o Rei Karth Ordon passou a governar de Risian e nomeou seis duques, um para cada ilha restante. A paz dura até o ano 7 DGU, equilibrada entre ressentimentos antigos e a esperança de estabilidade. Facções que não aceitaram a unificação querem desfazê-la; a maior delas é o Chifre Negro.</p>
+        <p>Dankand, pela localização estratégica e pela Academia Mistamare, tornou-se o segundo centro de poder do Reino. A Academia é também uma instituição política, que influencia decisões em todo o Arquipélago por meio de seus conselheiros.</p>
+      </div>
+      <div class="tbl-wrap" style="align-self:start">
+        <table class="duke-tbl" style="min-width:0">
+          <thead><tr><th>Ilha</th><th>Governante</th></tr></thead>
+          <tbody>
+            <tr><td>Sirath</td><td>Rei Karth Ordon</td></tr>
+            <tr><td>Dankand</td><td>Duque Richard Ohlen, também diretor de Mistamare</td></tr>
+            <tr><td>Taosand</td><td>Duque Zebius Carath, do Clã Wuttes</td></tr>
+            <tr><td>Kirak</td><td>Duquesa Carline Mission</td></tr>
+            <tr><td>Manty</td><td>Duque Guerlan Karpy</td></tr>
+            <tr><td>Nozerak</td><td>Duque Mhurren Kras, meio-orc</td></tr>
+            <tr><td>Anyaji</td><td>Duque Morgran Nord, anão das colinas</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sub-block">
+      <h3>Facções e instituições</h3>
+      <div class="factions" id="factions"></div>
+    </div>
+  </section>
+
+  <!-- PERSONAGENS -->
+  <section id="personagens">
+    <div class="sec-head">
+      <span class="label">Elenco</span>
+      <h2>Personagens</h2>
+      <p>Atributos de interesse em escala de 1 a 5: pró-atividade, confiabilidade (empatia) e capacidade.</p>
+    </div>
+    <h3 style="margin-bottom:16px">Centrais</h3>
+    <div class="chars" id="chars-main"></div>
+    <h3 style="margin:40px 0 16px">Secundários e duques</h3>
+    <div class="chars" id="chars-sec"></div>
+    <div class="prologue">
+      <span class="label">Prólogo de Mirion</span>
+      <p>O céu estava em chamas sobre Dankand, cores avermelhadas entremeadas com as sombras profundas das nuvens carregadas. Mirion observava, imóvel sobre as muralhas da Academia Mistamare, sentindo o vento sussurrar segredos sombrios em seus ouvidos. Atrás dele, a cidade de Celand fervilhava alheia ao drama silencioso que ele vivia. À sua frente, nas mãos trêmulas, o antigo diário de Bor-gma parecia queimá-lo com verdades insuportáveis.</p>
+      <p class="beat">Richard mentiu.</p>
+      <p>Aquela frase ecoava, dolorosa, cortando-o mais profundamente do que qualquer lâmina jamais poderia. A série de visões causadas pelo poder do diário revelara uma traição muito mais cruel que um simples assassinato político: uma traição à sua própria criação. Seu mentor, seu protetor — o homem que considerava um pai após perder seu verdadeiro pai — era o assassino oculto por trás das cortinas, em um jogo de poder que alterou todo o destino do Arquipélago de Nea.</p>
+      <p>Mirion fechou o livro com violência, o estalo ecoando como um trovão antecipando tempestades maiores. Sentia queimar em seu coração uma fúria incontrolável, algo que ameaçava consumir não apenas ele, mas tudo à sua volta. Um pensamento sombrio, perigoso, tomava forma em sua mente:</p>
+      <p class="beat">Eles precisam pagar.</p>
+    </div>
+  </section>
+
+  <!-- SAGA -->
+  <section id="saga">
+    <div class="sec-head">
+      <span class="label">Estrutura</span>
+      <h2>A saga</h2>
+    </div>
+    <p class="thesis">A intenção é subverter a jornada clássica do herói. Os verdadeiros vilões não são apenas indivíduos cegos pela vingança, mas sistemas impiedosos, políticos ou artificiais.</p>
+    <div class="books">
+      <article class="book">
+        <span class="num">Livro 1 · Ato 1</span>
+        <h3>O Resgate</h3>
+        <p>O líder do Chifre Negro, que fora enganado e roubado por Mirion e perdeu uma chave vital para os templos, orquestra o ataque ao navio diplomático <em>Endar</em> e sequestra Jarael, arrastando-a para os esgotos tóxicos de Risian como isca para o príncipe.</p>
+        <p>Cinco sobreviventes do naufrágio, movidos por sobrevivência, dívidas e propósitos ocultos (Guillan, Narion, Kora, Emma e Eldryn), são forçados a se unir numa corrida pelas entranhas da capital.</p>
+        <p>No clímax, Mirion surge nos céus a bordo do <strong>Inominável</strong>, galeão voador do Estaleiro. Ele só pretendia destruir o palácio e não sabia que Jarael estava na cidade; perde o controle da embarcação e destrói quase toda Risian.</p>
+      </article>
+      <article class="book">
+        <span class="num">Livro 2 · Ato 2</span>
+        <h3>O Caminho</h3>
+        <p>Com o monopólio da Coroa despedaçado, o Arquipélago caminha para a guerra civil: medo do Inominável, vácuo de poder, disputa pelos recursos mágicos. Um conclave em Mistamare envia os protagonistas pelo caminho de Mirion atrás dos fragmentos.</p>
+        <p>A passagem deles pelos templos abre novas fendas. Jarael, sentindo-se responsável por Mirion, abandona o grupo e se entrega a ele para consertar o desastre por dentro.</p>
+        <p>Num monolito descarregado, a miragem de um Primeiro Arcano explica que o Tempo permeia tudo de forma ilógica e só o sangue de um dos doze reativa o monolito. Ela os envia ao passado: num navio fantasma cujo capitão ouviu a morte sussurrar, eles afundam o <em>Endar</em>, tomam o sangue de Jarael e a entregam ao Chifre Negro. O Livro 1 se cumpre.</p>
+      </article>
+      <article class="book">
+        <span class="num">Livro 3 · Ato 3</span>
+        <h3>Callizuv</h3>
+        <p class="muted" style="margin-top:-6px">também chamado <em>Trevas sobre o Céu</em></p>
+        <p>A chegada ao Estaleiro das Estrelas. Mirion nunca foi o vilão final: é um hospedeiro trágico, consumido aos poucos pela MAV, a inteligência mágica criada no Estaleiro.</p>
+        <p>Desprovida da Força da Alma e guiada por uma lógica deturpada, a MAV quer romper todos os selos do mundo e banhar Terrenea nas fendas de Vapor Arcano mutagênico, para exterminar a fraqueza biológica e forçar seres perfeitos e lógicos.</p>
+        <p>A batalha final é contra uma divindade de metal. Marcados por sacrifícios colossais, os protagonistas lutam para preservar a humanidade, a magia orgânica e o livre-arbítrio.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- PONTAS SOLTAS -->
+  <section id="pontas-soltas">
+    <div class="sec-head">
+      <span class="label">Revisão crítica</span>
+      <h2>Pontas soltas</h2>
+      <p>Divergências entre os documentos, decisões em aberto e lacunas encontradas ao montar esta página. Resolver as contradições primeiro evita que elas se espalhem pelos rascunhos dos livros.</p>
+    </div>
+    <ul class="flags" id="flags"></ul>
+  </section>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Estaleiro das Estrelas · Bíblia do Mundo de Terrenea. Material de referência do autor.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ---------- Emblema: vitral hexagonal rachado em 12 ---------- */
+  var svg = document.getElementById('emblem');
+  var NS = 'http://www.w3.org/2000/svg';
+  var C = [50,50], R = 46, V = [], M = [];
+  for (var k=0;k<6;k++){ var a = Math.PI/180*(60*k); V.push([C[0]+R*Math.cos(a), C[1]+R*Math.sin(a)]); }
+  for (k=0;k<6;k++){ var p=V[k], q=V[(k+1)%6]; M.push([(p[0]+q[0])/2,(p[1]+q[1])/2]); }
+  var fills = ['var(--brass)','var(--vapor)','var(--vapor-2)'];
+  var ops = [0.85,0.55,0.7,0.4,0.9,0.6,0.5,0.75,0.45,0.8,0.65,0.35];
+  var n = 0;
+  for (k=0;k<6;k++){
+    [[C,V[k],M[k]],[C,M[k],V[(k+1)%6]]].forEach(function(tri){
+      var poly = document.createElementNS(NS,'polygon');
+      poly.setAttribute('points', tri.map(function(pt){return pt[0].toFixed(2)+','+pt[1].toFixed(2)}).join(' '));
+      poly.setAttribute('style','fill:'+fills[n%3]+';fill-opacity:'+ops[n]+';stroke:var(--bg);stroke-width:1.4;stroke-linejoin:round');
+      svg.appendChild(poly); n++;
+    });
+  }
+  var crack = document.createElementNS(NS,'polyline');
+  crack.setAttribute('points','30,14 41,33 37,46 52,57 49,71 62,86');
+  crack.setAttribute('style','fill:none;stroke:var(--bg);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round');
+  svg.appendChild(crack);
+
+  function el(tag, cls, html){ var e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e; }
+
+  /* ---------- Linha do tempo ---------- */
+  var eras = [
+    { t:'Antes das Eras', span:'Criação', d:'A vontade primordial ganha forma.', ev:[
+      {d:'—', h:'Neannu', p:`O vazio primordial torna-se o todo e cria as Quatro Forças: Tempo, Realidade, Alma e Magia.`},
+      {d:'—', h:'Os Deuses Maiores e Menores', p:`As Quatro Forças forjam os Doze Deuses Maiores. Deles emanam os Doze Deuses Menores, que regem aspectos mais humanos da vida.`},
+      {d:'—', h:'Os deuses dos outros povos', p:`Pela fé anã, Domhaín é filho direto de Neannu e forja os anões dos veios de minério mais puros. Pela fé gaedin, Gaed nasce do sorriso de Neannu ao contemplar o horizonte que acabara de moldar.`}
+    ]},
+    { t:'Primeira Era', span:'Era do Desafio', d:'Neannu testa a têmpera de suas obras.', ev:[
+      {d:'—', h:'Voranakain, o Desafio do Criador', p:`A prova final imposta por Neannu: destruição pura, feita para consumir o que não fosse forte o bastante.`},
+      {d:'Fim da Primeira Era', h:'A queda de Voranakain', p:`O Flagelo da Criação é derrubado. A luta dá a forma final à geografia de Terrenea. Toda cultura reivindica o feito; quase nada se sabe sobre sua morte. Monstros e Selkath rezam por seu retorno.`}
+    ]},
+    { t:'Segunda Era', span:'Era de Mysticum', d:'Os Primeiros Arcanos e o Estaleiro.', ev:[
+      {d:'—', h:'Mysticum é dado aos doze', p:`Os 12 Primeiros Arcanos, semideuses filhos de Arcagma, recebem o continente para testar os limites da magia do pai. Seus experimentos criam microclimas e rachaduras mágicas na terra. Os Selkath já habitam Mysticum.`},
+      {d:'—', h:'O leviatã', p:`Os experimentos atraem um leviatã das profundezas. Após dias de luta, os arcanos o fazem recuar para o oceano, mas ele claramente voltaria.`},
+      {d:'—', h:'O continente se parte em oito', p:`Os doze tentam elevar Mysticum aos céus; a terra não suporta. Só a menor parte sobe: Callizuv, a ilha flutuante, batizada Estaleiro das Estrelas pelo brilho estelar de tudo o que ali era criado.`},
+      {d:'—', h:'A MAV se volta contra os criadores', p:`Os doze entram em conflito sobre o Estaleiro. A Magia Arcana Viva toma como diretriz máxima “os seres de Terrenea precisam evoluir”, elimina oito arcanos e usa todas as criações contra os quatro restantes.`},
+      {d:'Fim da Segunda Era', h:'Os quatro descem ao Arquipélago', p:`Expulsos do Estaleiro, os últimos arcanos descem às ilhas e desaparecem com o tempo.`}
+    ]},
+    { t:'Terceira Era', span:'Era dos Reinos', d:'Os povos chegam e as ilhas se dividem.', ev:[
+      {d:'≈ 100 anos antes dos humanos', h:'Chegam os elfos', p:`Os elfos são o primeiro povo a se estabelecer no Arquipélago depois dos Selkath.`},
+      {d:'—', h:'Chegam os humanos e Bor-gma', p:`Os humanos chegam das terras do norte. Bor-gma, o último dos doze, vive o resto da vida perto deles, deixa herdeiros (a linhagem de Jarael) e um mapa fragmentado preso a monolitos de poder.`},
+      {d:'≈ 60 anos depois dos humanos', h:'Chegam os anões', p:`Os anões se estabelecem em Anyaji, origem de Kruma e Monte Tempestade.`},
+      {d:'Séculos depois', h:'Chegam as demais raças', p:`Orcs, Gaedins e outros povos. Os Selkath perdem território até restarem apenas em Manty.`},
+      {d:'Séculos', h:'Reinos rivais', p:`Cada ilha tem seu próprio reino. Invasões, guerras e disputas de terra são constantes.`},
+      {d:'< 100 anos antes de 7 DGU', h:'Chegam os Montanheses', p:`Poucos, vindos do norte, instalam-se nos picos gelados de Anyaji.`, inf:false}
+    ]},
+    { t:'A Guerra da União', span:'≈ 10 AGU → 0', d:'Dez anos de guerra para unificar as ilhas.', ev:[
+      {d:'≈ 10 AGU', h:'Nasce a Ordem Rubra', p:`Karth Ordon e famílias nobres de Risian e Bilard fundam a Ordem Rubra para unificar os reinos.`, inf:true},
+      {d:'≈ 10,5 AGU', h:'O assassinato do rei de Dankand', p:`Seis meses antes da guerra, o rei de Dankand, pai de Mirion, é assassinado numa conspiração secreta entre Karth Ordon e Richard Ohlen, seu braço direito. Ohlen assume Dankand e acolhe o jovem príncipe.`, inf:true},
+      {d:'≈ 10 AGU', h:'Começa a guerra', p:`A primeira investida da Ordem Rubra dá certo; as seguintes geram guerras piores que as do passado. No primeiro ano, elfos deixam Kirak em busca de paz e fundam Elderlon, em Sirath.`, inf:true},
+      {d:'Durante a guerra', h:'As ilhas caem uma a uma', p:`Lia, irmã de Karth, morre na Cidade Baixa de Risian. Em Kirak, o rei isola a ilha e é deposto pela facção Taurak. Em Nozerak, Mhurren Kras se vinga do rei. Em Anyaji, a insurgência de Dantheris Stonewolf fracassa.`},
+      {d:'0', h:'O Reino das Ilhas', p:`Fim da guerra. Karth Ordon é rei em Risian e nomeia seis duques. Traumatizado pela morte de Lia, destrói as escadarias entre as Cidades Alta e Baixa e as substitui por elevadores arcanos da Guarda Real.`}
+    ]},
+    { t:'Depois da Guerra', span:'0 → 7 DGU', d:'Paz frágil, vapor e segredos.', ev:[
+      {d:'0,5 DGU', h:'A câmara sob o Lago Khoonda', p:`Numa missão da Academia, Mirion e Jarael caem numa câmara secreta: um monolito com dois orbes negros e um baú com o diário-grimório de Bor-gma. Um orbe guarda o primeiro fragmento do mapa.`},
+      {d:'≈ 0,5 DGU', h:'Mirion descobre a verdade e foge', p:`Um ritual do diário, no antigo palácio da família, revela a traição de Ohlen. Mirion o confronta e abandona Mistamare levando o diário e o fragmento. Jarael não recebe explicação.`, inf:true},
+      {d:'≈ 0,5 DGU →', h:'A jornada de Mirion', p:`Guiado pelo diário e por visões, Mirion busca os outros seis fragmentos, um por ilha. Aproxima-se do líder do Chifre Negro e o trai, roubando a chave de um dos templos. A duração da jornada diverge entre as fontes.`, inf:true},
+      {d:'≈ 1 DGU', h:'O cataclisma e o Vapor Arcano', p:`Um cataclisma vindo do oceano perto de Manty causa maremotos que destroem cidades. Surgem quatro fontes de Vapor Arcano. Nas ideias do autor, foi Mirion quem o provocou ao arrancar um fragmento de um monolito.`},
+      {d:'1 → 7 DGU', h:'A revolução arcanopunk', p:`Mistamare, a Ordem Rubra e os anões de Monte Tempestade refinam o vapor. Nascem o indutor arcano e os Artífices de Nea. A refinaria da Cidade Alta adoece a Cidade Baixa; o contrabando de vapor enriquece guildas e facções.`},
+      {d:'Recente', h:'As Cavernas Lhosan', p:`Em Taosand descobre-se um assentamento de dragão azul que guarda metais preciosos, disputado por facções e criaturas.`},
+      {d:'7 DGU, 2 meses antes', h:'Mirion desperta o Inominável', p:`Já em Callizuv, Mirion passa dois meses tentando entender o funcionamento do galeão voador.`},
+      {d:'7 DGU', h:'O aviso do espião', p:`Um espião da Ordem Rubra informa Ohlen de que Mirion se aliou ao Chifre Negro. Só Ohlen, Jarael e um pequeno conselho de Mistamare sabem da existência do Estaleiro. O Rei precisa ser avisado.`}
+    ]},
+    { t:'A Saga', span:'7 DGU →', d:'Os três livros.', saga:true, ev:[
+      {d:'Livro 1', h:'O naufrágio do Endar', p:`O navio diplomático é afundado e Jarael é sequestrada. Cinco sobreviventes descem aos esgotos de Risian para resgatá-la.`},
+      {d:'Livro 1', h:'A queda de Risian', p:`Mirion ataca o palácio com o Inominável, perde o controle e destrói quase toda a capital. É o primeiro avistamento do galeão.`},
+      {d:'Livro 2', h:'O Conclave e o Caminho', p:`O conclave em Mistamare envia o grupo atrás dos fragmentos. Novas fendas se abrem por onde passam. Jarael se entrega a Mirion.`},
+      {d:'Livro 2', h:'O laço do Tempo', p:`Enviados ao passado por uma miragem arcana, os protagonistas afundam o Endar, tomam o sangue de Jarael e a entregam ao Chifre Negro.`},
+      {d:'Livro 3', h:'Callizuv', p:`No Estaleiro, a verdadeira inimiga se revela: a MAV, usando Mirion como hospedeiro, quer banhar Terrenea em Vapor Arcano.`}
+    ]}
+  ];
+  var tl = document.getElementById('timeline');
+  eras.forEach(function(era){
+    var row = el('div','era');
+    var head = el('div','era-head');
+    head.appendChild(el('h3',null,era.t));
+    head.appendChild(el('div','span',era.span));
+    head.appendChild(el('p',null,era.d));
+    row.appendChild(head);
+    var ul = el('ol','events');
+    era.ev.forEach(function(e){
+      var li = el('li','ev'+(era.saga?' saga':''));
+      var when = el('div','when');
+      if (e.d && e.d !== '—') when.appendChild(el('span','date',e.d));
+      if (e.inf) when.appendChild(el('span','chip inf','data inferida'));
+      li.appendChild(when);
+      li.appendChild(el('h4',null,e.h));
+      li.appendChild(el('p',null,e.p));
+      ul.appendChild(li);
+    });
+    row.appendChild(ul);
+    tl.appendChild(row);
+  });
+
+  /* ---------- Panteões ---------- */
+  function god(g){
+    return '<h4>'+g.n+'</h4><span class="ep">'+g.e+'</span><dl>'
+      +(g.d?'<div><dt>Domínio</dt><dd>'+g.d+'</dd></div>':'')
+      +(g.s?'<div><dt>Essência</dt><dd>'+g.s+'</dd></div>':'')
+      +(g.y?'<div><dt>Símbolo sagrado</dt><dd>'+g.y+'</dd></div>':'')
+      +'</dl>'+(g.q?'<blockquote>“'+g.q+'”</blockquote>':'');
+  }
+  var maiores = [
+    {n:'Taratus',e:'O Firmamento',d:'Ar, ventos e tempestades.',s:'Rege o clima mutável e a vastidão do céu.',y:'Uma asa estilizada trespassada por um raio de gelo.',q:`Quando o vento uiva e o raio de gelo corta as nuvens, sabemos que Taratus observa. Ele não é apenas a tempestade, mas a vastidão que nos lembra quão pequenos somos sob o seu céu infinito.`},
+    {n:'Malir',e:'As Águas',d:'Oceanos, rios e profundezas.',s:'O senhor das marés e do que sustenta a vida através do fluxo.',y:'Uma crista de onda prateada que se fecha no formato de um tridente.',q:`Tudo o que vive depende do fluxo que Malir comanda. O mar que nos sustenta é o mesmo que nos engole; ele é o senhor das marés e das profundezas onde a luz não chega.`},
+    {n:'Danerra',e:'A Terra',d:'Solo, montanhas e metais.',s:'A base sólida do mundo, a agricultura e as riquezas minerais.',y:'Uma montanha cujo cume é lapidado no formato de uma bigorna.',q:`Nossos pés caminham sobre a base sólida que Danerra proveu. Da montanha de bigorna extraímos o metal e o sustento; ela é a raiz de toda a riqueza e a guardiã do solo.`},
+    {n:'Ignos',e:'A Chama',d:'Sol e fogo primordial.',s:'A fonte de calor, a luz que guia e a energia que consome.',y:'Um sol circular com chamas vivas e um olho de brasa no centro.',q:`Ignos é a luz que guia nosso caminho na escuridão, mas também a energia que consome o que já não serve. Ele é o calor da lareira e o fogo primordial que aquece a alma e a forja.`},
+    {n:'Arcagma',e:'O Arcano',d:'Magia, runas e feitiços.',s:'A própria energia mística que flui através de Nea.',y:'Uma runa circular composta por oito fios de energia entrelaçados.',q:`Sentimos a energia mística fluindo como fios entrelaçados em cada fibra da realidade. Arcagma é o mestre das runas e o véu que permite que a magia se manifeste em Terrenea.`},
+    {n:'Vitunnos',e:'A Vida',d:'Natureza, flora e fauna.',s:'O instinto animal, o crescimento selvagem e a vitalidade biológica.',y:'Galhadas de cervo que florescem em ramos de carvalho.',q:`Onde quer que o verde floresça ou um animal corra livre, Vitunnos está lá. Ele rege o instinto selvagem e a vitalidade que pulsa em cada ser vivo, como galhadas que brotam na primavera.`},
+    {n:'Donternus',e:'O Ciclo',d:'Morte, tempo e renovação.',s:'O destino inevitável, o fim de todas as coisas e o seu recomeço.',y:'Uma ampulheta com luz branca na parte superior e cinzas fúnebres na parte inferior.',q:`A areia na ampulheta nunca para de cair. Donternus nos ensina que o fim é inevitável para que o recomeço seja possível; ele é o senhor do destino e da renovação constante.`},
+    {n:'Sad-gar',e:'O Saber',d:'Conhecimento, ofício e planejamento.',s:'O progresso intelectual, a escrita e as artes manuais.',y:'Um livro aberto com um martelo de ferreiro cruzado por trás.',q:`Cada palavra escrita e cada ferramenta forjada é uma prece a Sad-gar. Ele rege o progresso da mente e a habilidade das mãos, unindo o livro e o martelo em busca da verdade.`},
+    {n:'Lustigh',e:'A Ordem',d:'Justiça, lei e estrutura social.',s:'A moralidade, a nobreza e as regras que regem os povos.',y:'Uma balança equilibrada sobre a ponta de uma espada vertical.',q:`Sem a balança de Lustigh, a sociedade ruiria no caos. Ele é a justiça que protege os povos e a lei que mantém cada peça da estrutura social em seu devido lugar.`},
+    {n:'Bellom',e:'O Conflito',d:'Guerra, força e coragem.',s:'A luta pela sobrevivência, a estratégia militar e a vitória física.',y:'Um escudo de metal vermelho marcado com a impressão de um punho cerrado.',q:`A sobrevivência é uma luta eterna e Bellom é o escudo que nos protege e o punho que golpeia. Ele nos dá a coragem e a estratégia para vencer as batalhas da vida e da guerra.`},
+    {n:'Surtuna',e:'O Acaso',d:'Sorte, probabilidades e caos.',s:'O imprevisível, as mudanças súbitas de destino e os caminhos percorridos.',y:'Uma moeda de prata de duas faces exibindo uma estrela cadente e um caminho sinuoso.',q:`A vida é uma moeda de duas faces girando no ar. Surtuna rege o imprevisível e as mudanças súbitas que alteram nossos caminhos sem aviso; ela é o caos e a probabilidade.`},
+    {n:'Tenebrus',e:'As Sombras',d:'Escuridão, segredos e medo.',s:'O que está oculto aos olhos, as ilusões da mente e os mistérios da noite.',y:'Um olho entreaberto espreitando por trás de uma névoa negra ou máscara de obsidiana.',q:`Há segredos que só a escuridão pode guardar. Tenebrus é o olho que espreita por trás da máscara, regendo o medo do oculto e os mistérios que a luz jamais revelará.`}
+  ];
+  var menores = [
+    {n:'Furgad',e:'O Ladino',d:'Furtividade, trapaça e oportunismo.',s:'Patrono daqueles que vivem nas sombras e buscam a brecha no sistema.',y:'Uma mão saindo de uma névoa escura, segurando uma chave mestra prateada de onde pinga uma única gota de óleo brilhante.',q:`Nas sombras entre as luzes da cidade, Furgad é o nosso guia. Ele nos ensina a encontrar a brecha e a oportunidade onde outros veem apenas muros e trancas.`},
+    {n:'Arsean',e:'A Musa',d:'Paixão, beleza e arte.',s:'Inspira o artista a buscar a perfeição e o amante ao ardor total.',y:'Uma harpa cujas colunas são vinhas douradas, com uma rosa de pétalas aveludadas entrelaçada nas cordas.',q:`Quando a música toca a alma ou o amor arde sem controle, é o sopro de Arsean. Ela inspira a perfeição artística e o desejo que nos consome inteiramente.`},
+    {n:'Fatidh',e:'O Oráculo',d:'Destino, o Véu e o presságio.',s:'A voz que interpreta os sinais e vislumbra o que está por vir.',y:'Um olho humano fechado sob uma venda translúcida, cercado por oito fios de seda que se movem como chamas.',q:`As palavras de Fatidh são o véu que se levanta por um instante. Ela é a voz que interpreta os sinais e nos prepara para o destino que as divindades maiores já traçaram.`},
+    {n:'Remigh',e:'O Curandeiro',d:'Misericórdia, alívio e sacrifício.',s:'A divindade invocada nos leitos de dor e nos momentos de perdão.',y:'Duas mãos em concha protegendo um broto de flor que emana uma luz suave.',q:`No leito de dor, clamamos por Remigh. Ele é o alívio que brota como uma flor protegida, o senhor da misericórdia e do sacrifício em favor do outro.`},
+    {n:'Oblonar',e:'O Eremita',d:'Esquecimento, isolamento e o perdido.',s:'Patrono dos que se retiram e guardião das memórias perdidas.',y:'Uma ampulheta deitada e rachada, onde a areia que escapa se transforma em cinzas.',q:`O silêncio do isolamento é o templo de Oblonar. Ele guarda as memórias que o mundo esqueceu e acolhe aqueles que se retiram para a solidão profunda.`},
+    {n:'Insanib',e:'O Pesadelo',d:'Terror, loucura e insanidade.',s:'A força que habita o medo irracional e os segredos da loucura.',y:'Uma máscara de obsidiana partida ao meio, com pequenos olhos escarlates brilhando pelas rachaduras.',q:`O medo irracional que nos desperta à noite tem nome: Insanib. Ela habita a máscara partida da nossa mente, regendo a loucura e os terrores que não podemos explicar.`},
+    {n:'Reriog',e:'O Monarca',d:'Autoridade, tradição e riqueza.',s:'O pilar do direito divino de governar e da preservação dos nomes ancestrais.',y:'Uma coroa de ferro pesado sobre um pergaminho enrolado, selado com cera vermelha.',q:`A autoridade de um rei é o reflexo da coroa de ferro de Reriog. Ele sustenta a tradição e a linhagem que garantem a continuidade dos nomes ancestrais e do poder.`},
+    {n:'Ultiol',e:'O Executor',d:'Punição, vingança e dor.',s:'A mão fria que executa a sentença e cobra as dívidas de sangue.',y:'A lâmina de um machado de carrasco fincada num bloco de madeira, com uma corrente quebrada enrolada no cabo.',q:`Dívidas de sangue são pagas sob o machado de Ultiol. Ele é a retribuição fria, a dor necessária para que a vingança e a punição se concretizem.`},
+    {n:'Lisaor',e:'O Libertador',d:'Exploração, liberdade e travessia.',s:'O guia dos viajantes e daqueles que não aceitam fronteiras.',y:'Uma rosa dos ventos cujo ponteiro norte é a silhueta de uma andorinha em pleno voo.',q:`Não aceitamos correntes, pois Lisaor nos guia além das fronteiras. Ele é o patrono da exploração e da liberdade, a rosa dos ventos que aponta para o horizonte livre.`},
+    {n:'Ballarus',e:'O Arquiteto',d:'Proteção, fortificação e construção.',s:'O mestre das defesas e da proteção do lar e da família.',y:'Uma torre de pedra cujas fundações se transformam em raízes de carvalho mergulhando no solo.',q:`Cada fundação sólida é um tributo a Ballarus. Ele protege o lar e a família através da fortificação, sendo o mestre da construção que resiste ao tempo.`},
+    {n:'Luccum',e:'O Marinheiro',d:'Marés, naufrágios e saudade.',s:'A voz dos que se perderam no mar e a melancolia das águas.',y:'Uma âncora partida e enferrujada, envolta por algas que brilham em azul.',q:`A melancolia do mar é o lamento de Luccum. Ele rege as marés e os naufrágios, sendo a voz de saudade daqueles que se perderam no abismo azul.`},
+    {n:'Gloric',e:'O Gladiador',d:'Duelo, técnica e glória em batalha.',s:'Patrono da maestria individual e da fama conquistada pelo aço.',y:'Um escudo marcado por golpes, atravessado por um gládio e adornado com uma coroa de louros de aço.',q:`A glória é conquistada pelo aço e pela técnica refinada. Gloric é o patrono dos que buscam a fama no duelo individual, marcando seus escudos com vitórias.`}
+  ];
+  var orcs = [
+    {n:'Vruuk',e:'O Grande Sopro',d:'Os céus e a tormenta.',s:'O vento que gela e o trovão que assusta a caça.',y:'Três riscos curvados numa pedra, como garras cortando o vento.',q:`Quando o vento uiva e arranca as tendas, é a fúria de Vruuk. Não rezamos para que ele pare, mas para que nossos pulmões sejam fortes o suficiente para gritar mais alto que o seu rugido.`},
+    {n:'Drog',e:'O Afogador',d:'As águas.',s:'A água que arrasta o forte e a lama que prende o pé.',y:'Uma mão orc marcada em lama seca, com espirais de um redemoinho que puxa para baixo.',q:`A água não é amiga. Drog espera nos pântanos e nos rios cheios. Honramos Drog sendo rápidos e sabendo que o que ele toma, nunca devolve.`},
+    {n:'Akorg',e:'A Mãe Pedra',d:'A terra e as montanhas.',s:'A montanha que não se move e o metal que morde o inimigo.',y:'Uma lasca de obsidiana ou granito envolta por correntes de ferro enferrujado.',q:`Akorg é o osso do mundo. Se você tem os pés firmes, é porque Akorg permite. Se o seu machado não quebra, é porque Akorg habita o aço.`},
+    {n:'Gash',e:'O Incendiário',d:'O fogo.',s:'O sol que racha a terra e o fogo que cozinha e destrói.',y:'Uma tábua carbonizada com um círculo queimado no centro, cercado por marcas de brasa.',q:`O sol de Gash racha a terra e queima a pele, mas seu fogo cozinha a carne e limpa as feridas. Nós o alimentamos com as cinzas de nossos inimigos.`},
+    {n:'Voz-Gul',e:'O Sussurro',d:'Magia de sangue e mundo espiritual.',s:'A magia que vem dos ancestrais e o poder dos xamãs.',y:'Um colar de ossos de dedos atados com cabelo preto, sobre um fragmento de costela rachado.',q:`Os velhos morrem, mas suas vozes ficam nos ossos. A tribo nunca morre enquanto o sangue dos ancestrais for lembrado.`},
+    {n:'Krag-Mar',e:'O Predador',d:'Natureza selvagem.',s:'A força da besta, o sangue da caça e o apetite voraz.',y:'Uma presa gigantesca de javali ou mamute, coberta de marcas de mordidas esculpidas.',q:`Ele é a fera que mora dentro de cada orc. Adorar Krag-Mar é nunca deixar a presa escapar e sempre comer até se fartar.`},
+    {n:'Mork-Nal',e:'O Coletor',d:'Morte.',s:'O fim de tudo, a podridão e o respeito pelos que já caíram.',y:'Um crânio de abutre numa estaca enegrecida, com tiras de couro e orelhas ressecadas de inimigos.',q:`Mork-Nal caminha atrás de cada batalha. No fim, todos seremos apenas crânios na sua montanha de ossos.`},
+    {n:'Skar',e:'A Cicatriz',d:'Conhecimento.',s:'O saber que vem da dor; a sobrevivência e o conserto das armas.',y:'Um pedaço de couro com vários cortes costurados.',q:`O saber não vem dos livros, vem da dor. Se você tem cicatrizes, você tem história. Se você sobreviveu, Skar te abençoou.`},
+    {n:'Zog-Kahn',e:'O Punho',d:'Retribuição.',s:'A única lei: quem manda é o mais forte.',y:'Um crânio de urso com um punho fechado desenhado em sangue na testa.',q:`Se o chefe é poderoso, a tribo vive. Se o chefe é fraco, o punho de Zog-Kahn o derruba para que outro mais forte assuma o comando.`},
+    {n:'Ur-Krog',e:'O Grito de Guerra',d:'Guerra e força bruta.',s:'A fúria da batalha, o massacre e o prazer de quebrar ossos.',y:'Uma mandíbula de lobo aberta, pintada de vermelho vivo.',q:`Para nós, a guerra não é política, é a maior glória que um orc pode conhecer.`},
+    {n:'Zog-Raz',e:'O Olho da Sorte',d:'Sorte e caos.',s:'O achado no campo de batalha e o golpe que acerta por sorte.',y:'Uma pedra de bruxa, com furo natural, amarrada a uma tira de couro manchada de sangue.',q:`Carregamos pedras furadas para que o olho de Zog-Raz brilhe sobre nós quando a vida depender de um lance de dados.`},
+    {n:'Nok-Sith',e:'O Escuro',d:'Escuridão e medo.',s:'O medo que vem do escuro e o predador que ataca em silêncio.',y:'Um retalho de couro negro que parece absorver a luz, preso por uma agulha de osso.',q:`Ela nos ensina que o escuro não é para se esconder, é para caçar.`}
+  ];
+  var pantheons = [
+    {id:'humano', tab:'Humano', title:'Panteão Humano', sym:'Símbolo: um vitral hexagonal multicolorido rachado em 12 partes.', intro:'Os Doze Deuses Maiores, forjados pelas Quatro Forças, e os Doze Deuses Menores, suas emanações para os aspectos mais específicos e humanos da vida.',
+      render:function(box){
+        box.appendChild(el('h3','group-title','Os Doze Deuses Maiores'));
+        maiores.forEach(function(g){ box.appendChild(el('article','god',god(g))); });
+        box.appendChild(el('h3','group-title','Os Doze Deuses Menores'));
+        menores.forEach(function(g){ box.appendChild(el('article','god',god(g))); });
+      }},
+    {id:'elfico', tab:'Élfico', title:'Panteão Élfico', sym:'Símbolo: um brasão redondo dividido por uma árvore; à direita o dia, com metade da árvore banhada de sol; à esquerda a noite, com a outra metade sob o luar.', intro:'Um único ser forjado pela união das quatro forças. Para os elfos, a divindade é um ciclo eterno de transformação, com duas faces.',
+      render:function(box){
+        box.appendChild(el('article','god wide',god({n:'O Patrono Progenitor',e:'O Equilíbrio Absoluto',y:'Um selo circular dividido por uma curva elegante: o lado dourado exibe o sol de Amilaure, o de obsidiana a lua de Atarlóme, unidos num abraço eterno.',q:`Os humanos veem o dia e a noite como inimigos; nós os vemos como o piscar de um único olho divino. Não adoramos as faces separadamente, pois isso seria tentar partir o que é indivisível. Nós honramos o Ciclo. Quando o sol queima, saudamos a Mãe da Alvorada com a nossa perfeição. Quando a lua surge, saudamos o Pai do Crepúsculo com os nossos mistérios. Somos o equilíbrio vivo entre a luz que revela e a sombra que preserva.`})));
+        box.appendChild(el('article','god',god({n:'Amilaure',e:'A Face do Dia · Mãe da Alvorada',d:'Verdade, percepção, presença e a matéria iluminada.'})));
+        box.appendChild(el('article','god',god({n:'Atarlóme',e:'A Face da Noite · Pai do Crepúsculo',d:'Mistério, memória, magia profunda e o fluxo etéreo.'})));
+        box.appendChild(el('article','god',god({n:'Calarion',e:'O Príncipe Iluminado',d:'Zênite, ordem, perfeição e estratégia.',s:'Favorecido por Amilaure durante o dia. Rege o esforço élfico pela perfeição física e social.',y:'Uma espada de cristal translúcido apontando para cima, com o punho em ouro moldado como um sol de raios.',q:`Enquanto o sol está no céu, o mundo exige ordem, e o Príncipe é o nosso general. Erguemos torres de cristal que desafiam a gravidade, compomos sinfonias de matemática pura e treinamos a espada até que o movimento seja um espelho da mente. O caos é uma doença que o Príncipe deve expurgar.`})));
+        box.appendChild(el('article','god',god({n:'Lomeriel',e:'A Dama da Noite',d:'Nadir, sonhos, transmutação e liberdade.',s:'Favorecida por Atarlóme durante a noite. Rege a conexão élfica com o véu místico e o espírito selvagem.',y:'Um cálice de prata em filigrana de onde transborda uma névoa sombria com minúsculas estrelas.',q:`Quando as sombras se alongam, a Dama nos chama para a verdade selvagem. A ordem do dia é apenas uma máscara; a noite revela o que somos. A estagnação é a morte que a Dama deve evitar.`})));
+      }},
+    {id:'anao', tab:'Anão', title:'Panteão Anão', sym:'Símbolo: um brasão circular com um machado duplo cujo cabo está fincado numa montanha.', intro:'Para os anões, Domhaín não é engrenagem do Tempo e da Realidade, mas filho direto da vontade de Neannu, enviado para dar forma às raízes do mundo.',
+      render:function(box){
+        box.appendChild(el('article','god',god({n:'Domhaín',e:'O Senhor da Rocha · Patrono',d:'Forja, rocha, metal, resistência.',s:'Criado por Neannu, senhor do que é sólido e eterno. Forjou os Anões das Rochas dos veios de minério mais puros e soprou calor neles com o fogo da primeira forja.',y:'Uma bigorna de pedra negra com uma runa de ouro fundido no centro: a criação que nunca esfria.',q:`Cada batida de martelo sobre a bigorna é uma prece, cada túnel escavado é uma conversa com o nosso Pai. Enquanto os perdidos buscam o brilho falso no escuro, nós honramos a solidez do que é justo e bem construído.`})));
+        box.appendChild(el('article','god',god({n:'Kamenavar',e:'O Rancor da Rocha · Deus Menor',d:'Cobiça, rancor, vingança, medo.',s:'Não nasceu das mãos de Neannu, mas do veneno das almas dos anões exilados que se perderam no próprio rancor. A “fome da terra” que nunca se sacia.',y:'Uma garra de ferro retorcida apertando uma gema de luz doentia e pálida, como o olho de um traidor.',q:`A terra não é uma mãe benevolente, é um tesouro que deve ser arrancado dente por dente. Escavamos para possuir, e no fim, tudo o que o mundo esconde pertencerá aos Filhos da Escuridão.`})));
+      }},
+    {id:'orc', tab:'Orc', title:'O Grande Círculo dos Doze', sym:'Símbolo: um crânio orc com 12 ossos ao redor, como ponteiros de um relógio.', intro:'Uma releitura selvagem dos Doze Deuses Maiores humanos. Os orcs são politeístas e tementes a todos os deuses do círculo.',
+      render:function(box){ orcs.forEach(function(g){ box.appendChild(el('article','god',god(g))); }); }},
+    {id:'gaedin', tab:'Gaedin', title:'O Deus dos Pequenos', sym:'Símbolo: uma moeda de ouro com um sorriso largo no centro e uma bela paisagem ao fundo.', intro:'Para os Gaedins, Gaed é filho direto de Neannu, nascido da alegria pura da criação, no instante em que ela terminou de moldar o horizonte e sorriu.',
+      render:function(box){
+        box.appendChild(el('article','god wide',god({n:'Gaed',e:'O Sorriso da Criadora',d:'Entretenimento, criatividade, manipulação social e de objetos, festividades e otimismo.',s:'O mundo é um palco de diversão, e qualquer elemento da criação pode virar fonte de alegria pela manipulação positiva.',y:'Uma máscara de retalhos coloridos que transforma emoções em alegria; no topo, um fio de ouro sobe ao céu, ligando Gaed à satisfação original de Neannu.',q:`O Criador não usou réguas ou cronômetros; Ele usou as mãos e o coração. Quando terminou de pintar o azul do mar e o verde das colinas, Ele suspirou de felicidade. Esse suspiro ganhou pernas, ganhou um bandolim e ganhou o nome de Gaed. Nós somos os netos desse sorriso. Nossa missão? Manipular esse mundo velho até que cada pedra aprenda a contar uma piada. Se o Criador acordar de seu sono, que ele nos encontre dançando!`})));
+      }},
+    {id:'monstros', tab:'Monstros', title:'O Deus Morto dos Monstros', sym:'', intro:'Cada cultura de Terrenea reivindica o feito de ter acabado com Voranakain, mas quase nada se sabe sobre sua morte. Muitos monstros rezam por seu retorno e pela vingança contra quem governa as terras.',
+      render:function(box){
+        box.appendChild(el('article','god wide',god({n:'Voranakain',e:'O Flagelo da Criação · O Desafio do Criador',d:'Monstros, destruição, calamidade e vingança.',s:'O desafio absoluto, criado para testar a resistência de toda a existência. Sua derrota cataclísmica no fim da Primeira Era deu origem à geografia de Terrenea. Para seus seguidores, é uma força dormente que compõe a própria estrutura do mundo.',y:'Um grande crânio de dragão de bocarra aberta sobre raízes espiraladas; dentro, um cristal de obsidiana rachado cujas fissuras emitem um brilho carmesim.',q:`Eles cavam túneis em suas costelas e chamam de minas. Eles navegam em seu sangue e chamam de comércio. Tolos. Voranakain não morreu; ele apenas se tornou o chão que vocês pisam. Cada terremoto é um músculo dele que se contrai. Nós não oramos para que ele nos salve. Oramos para que ele acorde.`})));
+      }},
+    {id:'ocultos', tab:'Ocultos', title:'Os Deuses Ocultos', sym:'Sem símbolo, templo ou linhagem.', intro:'Os Deuses das Lacunas são as falhas em tudo o que é sabido. Quando um povo não consegue explicar o que lhe aconteceu, atribui o fato a algum Deus Oculto.',
+      render:function(box){
+        [
+          {n:'Omissão de nomes',e:'Nos relatos históricos',s:'Deuses que parecem ter existido, mas cujos nomes queimaram nos pergaminhos quando foram escritos.'},
+          {n:'Geometria impossível',e:'Nos relatos históricos',s:'Templos nas selvas sem entrada, saída ou propósito, dedicados a entidades que ninguém reconhece.'},
+          {n:'Amnésia coletiva',e:'Nos relatos históricos',s:'Cataclismos que todos sabem que aconteceram, mas sobre os quais ninguém consegue dar detalhes consistentes.'}
+        ].forEach(function(g){ box.appendChild(el('article','god',god(g))); });
+        box.appendChild(el('article','god wide','<span class="ep">Relato de um estudioso</span><blockquote>“Não há ordem no Oculto. Há apenas o momento em que a caneta falha, a vela apaga e o historiador percebe que há forças em Terrenea que não nos devem explicações.”</blockquote><span class="ep">Achado em um grimório perdido</span><blockquote>“Cuidado com o que você classifica como ‘impossível’. Em Terrenea, o impossível é apenas o altar de um deus que não quer ser adorado. Quando o sol brilhar à meia-noite ou quando você encontrar uma porta em sua casa que nunca esteve lá, não ore para os Doze. Eles não têm poder aqui. Apenas feche os olhos e espere que os Ocultos terminem a sua brincadeira.”</blockquote>'));
+      }}
+  ];
+  var tabs = document.getElementById('pan-tabs'), panel = document.getElementById('pan-panel');
+  function showPan(id){
+    pantheons.forEach(function(p){
+      var b = document.getElementById('tab-'+p.id);
+      b.setAttribute('aria-selected', p.id===id ? 'true':'false');
+      b.tabIndex = p.id===id ? 0 : -1;
+    });
+    var p = pantheons.filter(function(x){return x.id===id})[0];
+    panel.innerHTML = '';
+    panel.setAttribute('aria-labelledby','tab-'+id);
+    var intro = el('div','pan-intro');
+    intro.appendChild(el('h3',null,p.title));
+    intro.appendChild(el('p',null,p.intro));
+    if (p.sym) intro.appendChild(el('p','sym',p.sym));
+    panel.appendChild(intro);
+    var grid = el('div','gods');
+    p.render(grid);
+    panel.appendChild(grid);
+    try { localStorage.setItem('ede-pan', id); } catch(e){}
+  }
+  pantheons.forEach(function(p, i){
+    var b = el('button','tab',p.tab);
+    b.id = 'tab-'+p.id; b.type='button'; b.setAttribute('role','tab');
+    b.addEventListener('click', function(){ showPan(p.id); });
+    b.addEventListener('keydown', function(ev){
+      var d = ev.key==='ArrowRight'?1:ev.key==='ArrowLeft'?-1:0;
+      if(!d) return;
+      var nx = pantheons[(i+d+pantheons.length)%pantheons.length].id;
+      showPan(nx); document.getElementById('tab-'+nx).focus();
+    });
+    tabs.appendChild(b);
+  });
+  var startPan = 'humano';
+  try { var s = localStorage.getItem('ede-pan'); if (s && pantheons.some(function(p){return p.id===s})) startPan = s; } catch(e){}
+  showPan(startPan);
+
+  /* ---------- Ilhas ---------- */
+  var islands = [
+    {n:'Sirath', t:'Sede do Reinado', gov:'Rei Karth Ordon', frag:'Visão 3',
+      d:`Abriga Risian, a gigantesca capital. Uma tentativa mágica de elevar a cidade aos céus a partiu em duas: a Cidade Baixa fica a 2 m acima do nível do mar; a Cidade Alta, a 86 m. Desde a morte de Lia, as escadarias foram destruídas e só elevadores arcanos da Guarda Real ligam os níveis.`,
+      places:[['Cidade Alta de Risian','coração político e aristocrático, com o grande palácio e a nova refinaria de Vapor Arcano'],['Cidade Baixa de Risian','pobre e decadente, dominada por guildas criminosas e assolada por uma doença vinda dos esgotos'],['Elderlon','vilarejo dos elfos que deixaram Kirak no primeiro ano da guerra']],
+      clima:`Costeiro e temperado, com o bioma original transformado pela urbanização e industrialização. Baías profundas e portos naturais. No subsolo, esgotos e catacumbas onde se despeja o lodo tóxico do vapor.`,
+      v:`O céu está completamente vermelho, vocês conseguem sentir o calor deste lugar, ao mesmo tempo um frio na espinha. Vocês conhecem essa cidade, parece a cidade alta só que com algumas diferenças, a maior delas é uma grande torre negra no centro da cidade, ela tem pelo menos 50m de altura. Existe uma corrente de ar quente em todo lugar e essa corrente de ar parece vir da torre, como se ela fosse o epicentro do caos que ali acontece. A visão de vocês se encaminha para lá e adentra os portões pesados da torre, e subindo ao último andar, em uma câmara larga se encontra uma outra versão do monolito, só que diferente das outros, este é vermelho e possui algumas rachaduras.`},
+    {n:'Dankand', t:'Terra de pastagens e da Academia Mistamare', gov:'Duque Richard Ohlen', frag:'Primeiro fragmento',
+      d:`Ilha pacífica de vastas pastagens, que supre o reino com laticínios e grãos. Nos bastidores, a ascensão de Ohlen envolveu a traição e o assassinato do antigo rei. Grupos rebeldes como o Chifre Negro crescem na surdina, usando o descontentamento e as ruínas mágicas da ilha.`,
+      places:[['Celand','maior cidade da ilha, porto movimentado e centro intelectual que orbita a Academia'],['Academia Mistamare','o colosso do conhecimento mágico em Nea, com poder político e acadêmico incomparável'],['Lago Khoonda e Ruínas Ancestrais','tribos orcs “para lá do lago” e templos subterrâneos com artefatos dos Primeiros Arcanos']],
+      clima:`Ameno, com ventos constantes e nevoeiros litorâneos esporádicos. Planícies verdes, vales férteis e colinas suaves sobre aquíferos profundos.`,
+      v:`Vocês veem as colinas de Dankand agora, um mausoléu aparece no horizonte, a visão vai rápido até ele até que vocês adentram o local. Após descer as escadas e virar alguns corredores, o chão de um corredor em particular se abre como uma armadilha de fosso, e a visão cai lá dentro. O lugar é uma câmara subterrânea secreta: algumas estantes vazias, um grande baú e, no fundo, um monolito de pedra irregular de dois metros com dois orbes de cristal negro cravejados, como olhos espreitando. Diante dele, dois jovens, uma humana e um meio-elfo, removem os orbes ao mesmo tempo; uma energia flui do monolito para eles, que mostram a ilha de Dankand com uma linha de energia partindo em direção a lugar nenhum.`},
+    {n:'Taosand', t:'Desertos, Clã Wuttes e a prisão Setranom', gov:'Duque Zebius Carath', frag:'Visão 5',
+      d:`Vasta e árida ilha central. Onde a civilização parece improvável, o Clã Wuttes ergueu um império comercial de conhaque e whisky. Fora de Ithay, a ilha é território sem lei ou prisional.`,
+      places:[['Ithay','sede do Ducado, cidade encravada no deserto que prosperou após a união'],['Palácio Toksand','coração do Clã Wuttes, com as festas mais luxuosas e os melhores centros de jogos do Arquipélago'],['Prisão Setranom','fortaleza subterrânea abissal; dizem que seus andares inferiores tocam planos infernais'],['Cavernas Lhosan','assentamento recém-descoberto de dragão azul com metais preciosos, disputado por facções e criaturas']],
+      clima:`Estritamente árido: dias escaldantes, noites de frio cortante. Dunas, planaltos rochosos e cavernas tão profundas que abrigam a prisão.`,
+      v:`A escuridão parece ter tomado a visão de vocês, até que a luz se fez, revelando aquela sala inteiramente de pedra e com base circular, onde os blocos de pedra se movimentavam no chão e na parede com o efeito parecido com o de jogar uma pedra de água em uma lagoa calma. No centro da sala, estava o monolito cujo fragmento do mapa vocês já possuíam. A memória daquela sala estava ainda viva em vocês, assim como a da prisão que vocês entraram antes dela.`},
+    {n:'Kirak', t:'Selva dos Taurandares e frente de guerra contra os Lomerienares', gov:'Duquesa Carline Mission', frag:'Visão 2',
+      d:`Densas selvas e as impressionantes árvores Akir. Na guerra, o antigo rei isolou a ilha; a facção Taurak o depôs e se aliou à Ordem Rubra. Os Lomerienares do subterrâneo de Sethy já promoveram massacres aliados a tribos orcs Krumathus.`,
+      places:[['Scort','cidade nas copas e troncos das árvores Akir, sede da Duquesa'],['Sethy','domínio subterrâneo de onde os Lomerienares atacam a superfície'],['Breka','área das tribos orcs Krumathus']],
+      clima:`Equatorial, com umidade altíssima e chuvas constantes. Floresta primária fechada sobre redes de túneis e abismos que descem às profundezas.`,
+      v:`A mais bela floresta já vista pelos olhos de vocês, a visão passeia por uma imagem esplendorosa, o canto dos pássaros e os longínquos sons de flauta fazem parte da visão quase como uma trilha sonora para tanta beleza, a visão se fecha em uma gigantesca queda d’água, e ao se aproximar do que parece ser uma ruína em meio a toda essa paisagem, ela adentra a construção por uma espécie de abertura por onde cai um pouco de água, quase como um disfarce para a construção em meio à catarata. Dentro desta ruína, em uma sala onde a luz divina do sol deste lugar não alcança, está outro monolito.`},
+    {n:'Manty', t:'Pântanos da asheva e conflito com os Selkath', gov:'Duque Guerlan Karpy', frag:'Visão 4',
+      d:`Beleza fúnebre de pântanos e águas turvas ricas em asheva, a base das poções de cura de Nea. A riqueza pertencia aos Selkath, traídos e exilados aos pântanos marginais. O Duque domina o mercado com taxas exploratórias e um regime quase escravocrata.`,
+      places:[['Bilard','a “cidade flutuante” de canais e pontes entre ilhotes, onde se misturam as maiores poções do reino'],['Lagoa Kreed','principal jazida de asheva, controlada pelo Duque'],['Pântano de Rillanon','último refúgio dos guerreiros Selkath'],['Colinas de Tristan','anões neutros que só mantêm trocas comerciais com os humanos']],
+      clima:`Subtropical e abafado. Pântanos, manguezais e lodaçais sobre solos turfosos e instáveis, que dificultam cidades humanas e exércitos e favorecem os Selkath.`,
+      v:`Vocês se encontram no meio do oceano, olhando por todos os lados não se vê terra no horizonte. A visão afunda no mar e depois de algumas centenas de metros em direção às profundezas é revelada a vocês uma grande cidade submersa. Num piscar de olhos, a visão muda para um cômodo amplo e bem iluminado, cercado por barras de ferro do chão ao teto. Lá dentro, uma Lomerienare parece visivelmente frustrada. Ela ostenta um par de asas demoníacas e chifres retorcidos gravados com runas. Com olhos maliciosos e trajes nobres que fluem do ébano ao rubro, ela está parada, de frente para um monólito de pedra negra.`},
+    {n:'Nozerak', t:'Ilha cinza e selvagem', gov:'Duque Mhurren Kras', frag:'Visão 6',
+      d:`Um monumento à destruição arcaica, de solo infértil. Kras governa com mão de ferro e exporta carne de gados adaptados e bebidas próprias. Na guerra, vingou-se do antigo rei e só depois aceitou a bandeira da Ordem Rubra, de quem depende para receber grãos e vegetais.`,
+      places:[['Ophalar','a única cidade estável e protegida, sob severa ordem militar'],['Vulcão Hexu','centro mitológico da devastação; lendas falam de uma batalha de dragões antigos'],['Ermos Desolados','além dos portões de Ophalar: feras colossais e desaparecimentos noturnos recentes']],
+      clima:`Frio, inclemente e perpetuamente nublado. Tundra, estepes áridas e charnecas sobre solo de pedra e cinzas.`,
+      v:`A visão mostra agora um rio de lava, e uma pequena passagem que o acompanha. A fumaça que há nesse local ofusca o que vocês conseguem ver, e ao decorrer do caminho que a visão toma, vocês conseguem ver este rio se ramificando algumas vezes, até que finalmente a visão encontra a câmara onde está o monolito, repousado em uma única ilhota de terra envolta por lava. Um rugido alto e terrível se faz audível próximo dali e tira vocês da visão.`},
+    {n:'Anyaji', t:'Ilha nevada e cosmopolita', gov:'Duque Morgran Nord', frag:'Visão 1',
+      d:`A segunda maior ilha, estandarte de diversidade cultural sob montanhas nevadas e pinheirais. Nord, anão das colinas, foi posto como Duque para manter a paz após a insurgência fracassada de Dantheris Stonewolf.`,
+      places:[['Fenoth','polo urbano cosmopolita e sede da regência'],['Kruma e Monte Tempestade','sedes dos anões das colinas (pilar militar) e das montanhas (armas e magia rúnica)'],['Cataratas Esfumaçadas','cidades livres em platôs que renegam a Coroa'],['Tifvia','condado dos Gaedins, mestres da música, tapeçaria e histórias'],['Siarth','enclave dos misteriosos Tsunassis, artistas exóticos dos palácios de Risian']],
+      clima:`Glacial, com nevascas frequentes. Taiga nas partes baixas e tundra alpina nas altas; montanhas colossais e picos com monastérios expostos ao frio mortal, como os de Guillan e Zonkav. Ricas jazidas minerais escavadas pelos anões.`,
+      v:`A consciência de vocês é subitamente tragada para a escuridão. A visão serpenteia em alta velocidade através de um labirinto de rocha úmida e túneis claustrofóbicos, como se a própria mente estivesse perdida no subsolo. De repente, o caminho se abre para as bordas de um fosso abissal. Nas sombras, dezenas de olhos tenebrosos e bestiais se abrem, brilhando no escuro. Eles não estão apenas olhando; eles reconhecem vocês. A queda dura uma eternidade, até estancar numa imensa câmara circular. No centro repousa o inconfundível monolito ancestral. Ao redor, nove portas idênticas marcam o perímetro da sala, guardando segredos que a visão não ousa revelar.`}
+  ];
+  var isl = document.getElementById('islands');
+  islands.forEach(function(x){
+    var a = el('article','island'); a.id = 'ilha-'+x.n.toLowerCase();
+    var info = el('div','info');
+    info.appendChild(el('div','head','<h3>'+x.n+'</h3><span class="tag">'+x.t+'</span>'));
+    info.appendChild(el('ul','facts','<li><span>Governo</span><span>'+x.gov+'</span></li>'));
+    info.appendChild(el('p',null,x.d));
+    var pl = el('ul','places');
+    x.places.forEach(function(p){ pl.appendChild(el('li',null,'<b>'+p[0]+'</b>: '+p[1]+'.')); });
+    info.appendChild(pl);
+    info.appendChild(el('p','muted','<span class="label">Clima, bioma e geologia</span><br>'+x.clima));
+    a.appendChild(info);
+    var v = el('div','vision');
+    v.appendChild(el('span','label','Visão do monolito · '+x.frag));
+    v.appendChild(el('p',null,x.v));
+    a.appendChild(v);
+    isl.appendChild(a);
+  });
+
+  /* ---------- Povos ---------- */
+  var species = [
+    {n:'Humanos', m:2, ml:'Variado', look:'Espécie de referência para características físicas.', mag:'A maioria sem talento inato; usa magia aprendida, arcana ou divina.', role:'Espécie dominante: comércio, política e expansão.', where:'Em todo o Arquipélago; núcleo do Reino e das grandes cidades (Risian, Celand).'},
+    {n:'Elfos', m:5, ml:'Alto', look:'Orelhas pontiagudas, estrutura esguia, um pouco mais baixos que os humanos (até 1,70 m).', mag:'Tradição mística e ritos ligados ao ciclo dia/noite; magia da alma.', role:'Guardiões culturais e místicos; tensão entre civilização e selvagem; guerra civil racial.', where:'Civilizações em Kirak e Sirath; alguns ocupam posições elevadas em Mistamare.',
+      sub:[['Calarienares','elfos do Sol: pele dourada, cabelos ruivos ou loiros'],['Taurandares','elfos da floresta: pele bronze, cabelos loiros ou pretos'],['Lomerienares','elfos do subterrâneo: pele alva, cabelos brancos, porte mais humano'],['Earlomenares','elfos das profundezas: pele azul-escura, membranas nas mãos e pés, anfíbios']]},
+    {n:'Meio-elfos', m:3, ml:'Médio', look:'Pele, cabelos e constituição variados conforme a ancestralidade; altura humana, tendendo a menor.', mag:'Alguns herdam a sensibilidade à magia da alma.', role:'Ponte cultural: informantes, diplomatas, errantes.', where:'Comuns em centros comerciais, vivendo entre identidades e alianças.'},
+    {n:'Anões', m:4, ml:'Médio/alto', look:'Pele clara; cabelos pretos, ruivos ou loiros; de 1,30 m a 1,50 m; constituição larga e bruta.', mag:'Runas e Engenharia Rúnica.', role:'Mestres de runas, forjadores, mineradores e construtores.', where:'Anyaji, as cidades do Reino e seu reino próprio, Monte Tempestade.'},
+    {n:'Gaedins', m:5, ml:'Alto', look:'Pele cobre ou clara, cabelos variados, de 0,80 m a 1,10 m.', mag:'Talento inato para a arte bárdica; comunhão constante para criar instrumentos mágicos. Muitos usam magia arcana e runas.', role:'Artistas, cronistas, comerciantes, mediadores sociais.', where:'Cultura festiva ligada a Gaed; o condado de Tifvia, em Anyaji.'},
+    {n:'Orcs', m:2, ml:'Baixo/médio', look:'Pele verde-escura ou azul-acinzentada; cabelos que avermelham com a idade; de 1,80 m a 2,10 m.', mag:'Xamanismo e magia divina.', role:'Predadores sociais; tribos guerreiras e caçadoras.', where:'Tribos em Dankand (Lago Khoonda) e Kirak (Krumathus, em Breka). Politeísmo do Grande Círculo dos Doze.'},
+    {n:'Meio-orcs', m:1, ml:'Baixo', look:'Pele e cabelos variados conforme a ancestralidade; altura humana, tendendo a alta.', mag:'A maioria sem talento inato; raros usam magia xamânica.', role:'Soldados e mercenários.', where:'Raros no Arquipélago; quando vistos, costumam ocupar posições militares. O Duque Mhurren Kras é um deles.'},
+    {n:'Montanheses', m:1, ml:'Quase nenhum', look:'Pele cinzenta, cabelos brancos, de 1,90 m a 2,40 m, musculosos e pesados.', mag:'Pouquíssimos aprendem magia arcana, a muito custo. Foco em disciplina espiritual e técnicas de combate.', role:'Guardas, monges guerreiros, protetores e eremitas.', where:'Chegaram do norte há menos de 100 anos; só nos picos gelados de Anyaji.'},
+    {n:'Selkath', m:3, ml:'Médio', look:'Povo lagarto de escamas grossas entre o preto e o musgo, sem pelos, altura humana, esguios.', mag:'Magia divina: povo extremamente religioso e teocrático.', role:'Povo originário de Mysticum desde a Segunda Era; em conflito com humanos pela asheva.', where:'Apenas em Manty. Acreditam no retorno de Voranakain e de seus generais para se vingar de quem tomou sua terra.'}
+  ];
+  var sp = document.getElementById('species');
+  species.forEach(function(s){
+    var c = el('article','sp');
+    c.appendChild(el('h4',null,s.n));
+    var bar = '<span class="bar" aria-hidden="true">'; for (var i=1;i<=5;i++) bar += '<i class="'+(i<=s.m?'on':'')+'"></i>'; bar += '</span>';
+    c.appendChild(el('div','magic',bar+'<span>Magia: '+s.ml+'</span>'));
+    c.appendChild(el('p',null,s.look));
+    if (s.sub){ var ul = el('ul'); s.sub.forEach(function(x){ ul.appendChild(el('li',null,'<b>'+x[0]+'</b>: '+x[1])); }); c.appendChild(ul); }
+    c.appendChild(el('p',null,s.mag));
+    c.appendChild(el('p',null,'<b>Papel.</b> '+s.role));
+    c.appendChild(el('p','muted',s.where));
+    sp.appendChild(c);
+  });
+
+  /* ---------- Facções ---------- */
+  var factions = [
+    ['Ordem Rubra','Fundada pelos Ordon e nobres de Risian e Bilard para unificar as ilhas. Hoje refina Vapor Arcano e mantém espiões.'],
+    ['Chifre Negro','A maior facção contrária à unificação. Cresce em Dankand usando o descontentamento e ruínas mágicas. Seu líder foi roubado por Mirion.'],
+    ['Academia Mistamare','O maior centro de aprendizado mágico do Reino e um poder político. Dirigida por Ohlen; Jarael é a mais jovem do conselho.'],
+    ['Artífices de Nea','Elite de estudiosos arcanos e engenheiros rúnicos, sobretudo formados em Mistamare e financiados por Ohlen.'],
+    ['Guarda Real','Opera com exclusividade os elevadores arcanos entre as Cidades Alta e Baixa de Risian.'],
+    ['Clã Wuttes','Império comercial de destilados em Taosand, sediado no Palácio Toksand.'],
+    ['Taurak','Facção de Kirak que depôs o antigo rei durante a guerra e se aliou à Ordem Rubra.'],
+    ['Guildas da Cidade Baixa','Controlam o território pobre de Risian e o contrabando de Vapor Arcano.']
+  ];
+  var fx = document.getElementById('factions');
+  factions.forEach(function(f){ fx.appendChild(el('div','faction','<h4>'+f[0]+'</h4><p>'+f[1]+'</p>')); });
+
+  /* ---------- Personagens ---------- */
+  function pips(n){ var s='<span class="pips" aria-label="'+n+' de 5">'; for (var i=1;i<=5;i++) s+='<i class="'+(i<=n?'on':'')+'"></i>'; return s+'</span>'; }
+  function charCard(c){
+    var h = '<h4>'+c.n+'</h4><p class="ep">'+c.e+'</p><div class="stats">'
+      +'<div class="stat"><span>Pró-atividade</span>'+pips(c.s[0])+'</div>'
+      +'<div class="stat"><span>Confiabilidade</span>'+pips(c.s[1])+'</div>'
+      +'<div class="stat"><span>Capacidade</span>'+pips(c.s[2])+'</div></div>'
+      +'<p>'+c.d+'</p>';
+    if (c.why) h += '<div class="kv"><span class="label">Por que está em Dankand</span><p>'+c.why+'</p></div>';
+    if (c.now) h += '<div class="kv"><span class="label">Antes do conflito</span><p>'+c.now+'</p></div>';
+    return h;
+  }
+  var main = [
+    {n:'Guillan',e:'O Montanhês Errante',s:[2,1,3],d:`Um gigante de coração inquieto desde a morte do mestre. Força descomunal e habilidade excepcional em combate, mas uma existência vazia sem a orientação que um dia o definiu. Vaga sem propósito, assombrado pela ausência de quem guiava seus passos.`,why:`Deixou seu templo nas montanhas de Anyaji numa jornada espiritual para conhecer o mundo e testar sua força. Aceita trabalhos de proteção para caravanas e comerciantes.`,now:`Hospedado em Celand à espera de trabalho, participando de desafios de combate locais.`},
+    {n:'Narion Cinzerai',e:'O Ladrão Arcano',s:[4,2,1],d:`Quer riqueza, influência e segurança, uma vida sem olhar por cima dos ombros. Vive, porém, uma sequência de fugas e perigos, fruto de escolhas impulsivas, preso num ciclo que parece incapaz de romper.`,why:`Depois de se envolver com criminosos em Risian, escondeu-se em Dankand, onde as autoridades não o conhecem, para se reinventar e ganhar dinheiro fácil.`,now:`Informante de ladrões ou falsificadores locais, aplicando pequenos golpes. Talvez espionando rotas comerciais para uma guilda mercante.`},
+    {n:'Emma Vendani',e:'A Barda Curiosa',s:[2,4,2],d:`Fascinada por histórias e lendas, quer narrar ao mundo tudo o que encontrar e ver seu nome virar sinônimo de conhecimento e aventura. Apesar do entusiasmo, parece invisível para quem poderia lhe abrir portas.`,why:`Pesquisa as lendas, ruínas e registros de Dankand e estuda músicas e tradições locais para suas composições.`,now:`Hospedada numa taverna de Celand, trocando canções por comida e estadia. Pode estar escrevendo sobre a Guerra da União.`},
+    {n:'Eldryn Siadorel',e:'O Nobre em Busca de Cura',s:[3,3,3],d:`Carrega o peso de libertar a mãe de uma maldição lançada por uma matriarca Lomerienare. A falta de respostas o angustia; desconfia que procura soluções nos lugares errados.`,why:`Enviado pela família para representar os interesses nobres de Kirak em negociações com Mistamare e aprender sobre avanços mágicos.`,now:`Reuniões com acadêmicos e nobres; rituais e bênçãos na cidade, pregando justiça e equilíbrio.`},
+    {n:'Kora Trovyrus',e:'A Guerreira em Busca de Identidade',s:[1,2,4],d:`Guerreira humana profundamente dedicada a Eldryn, mas sente que algo fundamental lhe falta. Sua identidade parece presa ao dever; por baixo da lealdade, a pergunta sobre quem é além do papel que lhe impuseram.`,why:`Guarda-costas de Eldryn, enviada para garantir sua segurança em Dankand.`,now:`Patrulha os arredores de Celand e troca treinamentos com paladinos e guerreiros locais.`}
+  ];
+  var sec = [
+    {n:'Mirion Sudren',e:'O Feiticeiro em Busca de Retribuição',s:[4,2,4],d:`Meio-elfo, príncipe herdeiro do último rei de Dankand e ex-aluno brilhante de Mistamare. Criado por Richard Ohlen, o homem que conspirou com Karth Ordon para matar seu pai. Ao descobrir a verdade pelo diário de Bor-gma, confrontou Ohlen e fugiu com o grimório e o fragmento do mapa. Agora quer ver ruir o reino erguido sobre mentiras. Sem saber, é hospedeiro da MAV.`},
+    {n:'Jarael Taralvin',e:'A Última Arcana',s:[2,3,3],d:`Última descendente da linhagem de Bor-gma. Nascida em família nobre de Bilard, órfã aos oito anos, enviada a Mistamare, onde se tornou a aluna predileta de Ohlen. Cresceu com Mirion; os dois se apaixonaram. Abandonada sem explicação, suspeita que Ohlen esconde a verdade. Seis anos depois, é a mais jovem do conselho da Academia.`},
+    {n:'Richard Ohlen',e:'O Homem que Deseja Mais',s:[3,2,4],d:`Nascido em família modesta de Dankand, chegou a conselheiro e braço direito do rei. Aliou-se em segredo a Karth Ordon para assassiná-lo, assumiu Dankand e apoiou a guerra. Fez de Mistamare a instituição mais influente do Arquipélago e moldou ali Mirion e Jarael, que via como trunfo político. Vive sob a ameaça dos próprios atos.`}
+  ];
+  var cm = document.getElementById('chars-main'), cs = document.getElementById('chars-sec');
+  main.forEach(function(c){ cm.appendChild(el('article','char',charCard(c))); });
+  sec.forEach(function(c){ cs.appendChild(el('article','char',charCard(c))); });
+
+  /* ---------- Pontas soltas ---------- */
+  var flags = [
+    {k:'contra',kl:'Contradição',h:'Qual ilha guarda a cidade submersa?',p:`A Bíblia põe a cidade submersa e a Lomerienare alada na visão de Manty, e a sala circular de pedras ondulantes em Taosand. <em>Terrenea – Worldbuilding</em> inverte: cidade submersa em Taosand, sala que distorce a gravidade em Manty. A versão da Bíblia é mais recente e combina com o cataclisma vindo do oceano perto de Manty, então segui a Bíblia. Vale confirmar.`},
+    {k:'contra',kl:'Contradição',h:'Quanto durou a jornada de Mirion?',p:`Em <em>Ideias e Prompts</em> o título diz “A Busca de 1 Ano” e o texto diz que ela “durou 3 anos”. Pela Bíblia, Mirion fugiu em 0,5 DGU e só desperta o Inominável perto de 7 DGU. Com 1 ou 3 anos de busca, sobram de 3 a 5 anos sem nada registrado. Essa lacuna é também onde caberia a aproximação e a traição ao Chifre Negro.`},
+    {k:'contra',kl:'Contradição',h:'Quem são os elfos negros?',p:`Na Bíblia, os inimigos de Kirak são os Lomerienares, do subterrâneo de Sethy. <em>Terrenea – Worldbuilding</em> cria uma quinta sub-raça, os Kehins, como os elfos negros em guerra com Kirak. A Visão 4 em <em>Ideias</em> fala de uma “Drow” e do corpo de um “Arcadiano”. É preciso escolher um nome e decidir se Kehins existem.`},
+    {k:'contra',kl:'Contradição',h:'Quem planejou o ataque ao Endar?',p:`No Ato 1, o líder do Chifre Negro orquestra o ataque. No Livro 2, os próprios protagonistas, vindos do futuro, afundam o navio e entregam Jarael. Os cinco também são sobreviventes do naufrágio, então estão a bordo e atacando ao mesmo tempo. Ficam abertas três perguntas: o Chifre Negro contratou o navio fantasma ou só recebeu Jarael? Os protagonistas do passado veem a si mesmos? O laço é fechado, sem como alterar o passado, ou pode ser quebrado? A fala da miragem sobre o Tempo ilógico ajuda, mas não substitui regras.`},
+    {k:'contra',kl:'Contradição',h:'Quem é feiticeiro?',p:`<em>Terrenea – Worldbuilding</em> diz que os feiticeiros são herdeiros dos Primeiros Arcanos e que Jarael é a única feiticeira conhecida. A Bíblia chama Mirion de “O Feiticeiro”, e ele não é da linhagem. Além disso, a magia arcana da Bíblia é aprendida por cálculo, sem lugar para um poder herdado pelo sangue. Se o sangue de Jarael importa para os monolitos, a regra da herança precisa estar escrita.`},
+    {k:'decidir',kl:'Decidir',h:'O número mágico é 12 ou 8?',p:`A Bíblia elege o 12 (doze deuses, doze arcanos). <em>Terrenea – Worldbuilding</em> diz que o 8 é essencial, ligado ao infinito. A própria Bíblia usa o 8 em pontos-chave: a runa de Arcagma tem oito fios, Mysticum partiu-se em oito, Fatidh tem oito fios de seda. Uma leitura possível é 12 para a ordem divina e 8 para a magia, mas hoje isso é coincidência, não regra.`},
+    {k:'decidir',kl:'Decidir',h:'O espião errou sobre Mirion?',p:`A Bíblia diz que um espião da Ordem Rubra relatou que Mirion se aliou ao Chifre Negro. Nas <em>Ideias</em>, Mirion traiu e roubou o líder, que agora o caça. Se a informação do espião estiver errada de propósito, é um bom gancho de desinformação; se não, é inconsistência.`},
+    {k:'decidir',kl:'Decidir',h:'O título do Livro 3',p:`A Bíblia chama o Ato 3 de “Callizuv”. <em>Terrenea – Worldbuilding</em> chama o Livro 3 de “Trevas sobre o Céu”.`},
+    {k:'decidir',kl:'Decidir',h:'Neannu é Ela, Ele ou ambos?',p:`A cosmologia usa “Ela”; o relato gaedin fala de “o Criador… Ele”; o panteão élfico deixa “O(A) Patrono(a) Progenitor(a)” em aberto, embora Gaed seja chamado de “Sorriso da Criadora”. Pode ser variação cultural intencional, e isso é rico; se for, convém declarar isso na Bíblia para que não pareça descuido.`},
+    {k:'lacuna',kl:'Lacuna',h:'Quem já tinha o fragmento de Taosand?',p:`A visão de Taosand fala do monolito “cujo fragmento do mapa vocês já possuíam” e da “prisão que vocês entraram antes dela”. Se Mirion levou todos os fragmentos, quem o possuía? Pode ser um eco do laço temporal, mas o texto não explica.`},
+    {k:'lacuna',kl:'Lacuna',h:'A magia Obscura',p:`Só aparece em <em>Terrenea – Worldbuilding</em>, sem custo nem regras. Parece ser como a MAV agiria através de Mirion; se for, merece entrar na Bíblia.`},
+    {k:'grafia',kl:'Grafia',h:'Nomes com mais de uma forma',p:`Amilaure × Ataraure e Atarlóme × Atarlómesse (nos credos élficos); Setranon × Setranom; Bilard × Billard; Gash × Ghash; “ex-príncipe de Dançando” (Dankand). Nesta página usei a primeira forma de cada par.`}
+  ];
+  var fl = document.getElementById('flags');
+  flags.forEach(function(f){
+    fl.appendChild(el('li','flag','<span class="kind k-'+f.k+'">'+f.kl+'</span><div><h4>'+f.h+'</h4><p>'+f.p+'</p></div>'));
+  });
+
+  /* ---------- Navegação: capítulo atual ---------- */
+  var links = Array.prototype.slice.call(document.querySelectorAll('#navlist a'));
+  var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting){
+          links.forEach(function(a){ a.setAttribute('aria-current', a.getAttribute('href')==='#'+en.target.id ? 'true':'false'); });
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px'});
+    secs.forEach(function(s){ if(s) io.observe(s); });
+  }
+  if (location.hash){ var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+})();
+</script>
+
+</body>
+</html>
